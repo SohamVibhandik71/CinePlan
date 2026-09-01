@@ -919,20 +919,20 @@ Watch / Schedule
 │ [ 🔍 Search ]             [🎲 Pick For Me] │
 │                                             │
 │ Continue Watching                           │
-│ ┌─────┐ ┌─────┐ ┌─────┐                   │
-│ │     │ │     │ │     │                   │
-│ └─────┘ └─────┘ └─────┘                   │
+│ ┌─────┐ ┌─────┐ ┌─────┐                     │
+│ │     │ │     │ │     │                     │
+│ └─────┘ └─────┘ └─────┘                     │
 │                                             │
 │ Today's Plan                                │
 │ ─────────────────────────────────────────── │
 │ 8 PM   Interstellar                         │
-│ 9 PM   Breaking Bad S03E08                 │
+│ 9 PM   Breaking Bad S03E08                  │
 │                                             │
 │ Your Stats                                  │
-│ ┌────────┐ ┌────────┐ ┌────────┐           │
-│ │ 42     │ │ 18.5h  │ │ 27     │           │
-│ │Watched │ │ Time   │ │Planned │           │
-│ └────────┘ └────────┘ └────────┘           │
+│ ┌────────┐ ┌────────┐ ┌────────┐            │
+│ │ 42     │ │ 18.5h  │ │ 27     │            │
+│ │Watched │ │ Time   │ │Planned │            │
+│ └────────┘ └────────┘ └────────┘            │
 └─────────────────────────────────────────────┘
 ```
 
@@ -1021,11 +1021,11 @@ For a 24-hour hackathon:
                   │ Auth                │
                   │ Watchlist           │
                   │ Progress            │
-                  │ Planner              │
+                  │ Planner             │
                   │ Recommendations     │
                   └───────┬──────┬──────┘
                           │      │
-                    MongoDB      │
+                      MongoDB    │
                           │      │
                  ┌────────▼─┐    │
                  │ Database │    │
@@ -1410,7 +1410,7 @@ It should demonstrate:
 ┌──────────────────────────────────────────────────┐
 │                    CINEPLAN                      │
 │                                                  │
-│  Discover → Organize → Prioritize → Plan        │
+│  Discover → Organize → Prioritize → Plan         │
 │                         ↓                        │
 │                       Watch                      │
 │                         ↓                        │
