@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     preferences: {
-        generes: {
+        genres: {
             type: [String],
             default: []
         },
