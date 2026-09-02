@@ -1,1 +1,21 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+@import 'tailwindcss';
+
+:root {
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: #e5e2e1;
+  background: #131313;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: #131313; }
+button, input { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes load {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(210%); }
+}
