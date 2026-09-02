@@ -1,8 +1,19 @@
 import React from 'react'
+import Landingpage from './pages/Landingpage';
+import { Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import Browse from './pages/Browse';
+import Library from './pages/Library';
 
 const App = () => {
   return (
-    <h1 className='text-3xl font-bold underline'>Hello World</h1>
+    <div>
+      <Routes>
+        <Route path='/' element={<Home/>} />
+        <Route path='/browse' element={<Browse/>}/>
+        <Route path='/library' element={<Library/>}></Route>
+      </Routes>
+    </div>
   )
 }
 
