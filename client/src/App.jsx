@@ -1,5 +1,3 @@
-import React from 'react'
-
 import React from 'react';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -25,4 +23,3 @@ const App = () => {
 };
 
 export default App;
-
