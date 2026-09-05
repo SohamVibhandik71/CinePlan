@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
-import { dummyMovies} from '../assets/assets';
+import { dummyMovies } from '../assets/assets';
 import Moviecard from '../components/Moviecard';
 import MovieModal from '../components/MovieModel';
+
 const Browse = () => {
 
-    const category = [
+  const category = [
     "Anime",
     "Movies",
     "Series",
-    ];
+  ];
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [search, setSearch] = useState("");
@@ -16,15 +17,12 @@ const Browse = () => {
 
   return (
 
-    <div className="min-h-screen bg-[#080808] text-white">
+    <div className="min-h-screen bg-[#080808] text-white pt-20">
 
-      {/* ================= NAVBAR ================= */}
+      {/* ================= BROWSE CONTROLS ================= */}
 
-      <nav
+      <div
         className="
-          sticky
-          top-0
-          z-40
           h-20
           px-6
           md:px-10
@@ -32,23 +30,11 @@ const Browse = () => {
           items-center
           justify-between
           gap-6
-          bg-[#080808]/90
-          backdrop-blur-xl
+          bg-[#080808]
           border-b
           border-white/10
         "
       >
-
-        {/* Logo */}
-
-        <div className="
-          text-2xl
-          font-bold
-          shrink-0
-        ">
-          Cine<span className="text-[#d4af37]">Plan</span>
-        </div>
-
 
         {/* Categories */}
 
@@ -66,7 +52,11 @@ const Browse = () => {
           {category.map((item) => (
             <button
               key={item}
-              onClick={() => setSelectedCategory(item)}
+              onClick={() =>
+                setSelectedCategory(
+                  selectedCategory === item ? "" : item
+                )
+              }
               className={`
                 px-5
                 py-2
@@ -90,13 +80,16 @@ const Browse = () => {
 
         {/* Search */}
 
-        <div className="
-          relative
-          w-40
-          sm:w-56
-          md:w-72
-          shrink-0
-        ">
+        <div
+          className="
+            relative
+            w-full
+            sm:w-56
+            md:w-72
+            shrink-0
+            ml-auto
+          "
+        >
 
           <input
             type="text"
@@ -134,7 +127,7 @@ const Browse = () => {
 
         </div>
 
-      </nav>
+      </div>
 
 
       {/* ================= CONTENT ================= */}
@@ -187,37 +180,43 @@ const Browse = () => {
           "
         >
 
-        {dummyMovies
-        .filter((movie) => {
-          if (!selectedCategory) {
-            return true;
-          }
+          {dummyMovies
 
-          return movie.type === selectedCategory;
-        })
-        .filter((movie) => {
-          if (!search.trim()) {
-            return true;
-          }
+            .filter((movie) => {
+              if (!selectedCategory) {
+                return true;
+              }
 
-          return movie.name
-            .toLowerCase()
-            .includes(search.toLowerCase());
-        })
-        .map((movie) => (
-        <Moviecard
-          key={movie.id}
-          movie={movie}
-          onClick={() => setSelectedMovie(movie)}
-        />))}
+              return movie.type === selectedCategory;
+            })
+
+            .filter((movie) => {
+              if (!search.trim()) {
+                return true;
+              }
+
+              return movie.name
+                .toLowerCase()
+                .includes(search.toLowerCase());
+            })
+
+            .map((movie) => (
+              <Moviecard
+                key={movie.id}
+                movie={movie}
+                onClick={() => setSelectedMovie(movie)}
+              />
+            ))}
 
         </div>
+
+
+        {/* ================= MOVIE MODAL ================= */}
 
         <MovieModal
           movie={selectedMovie}
           onClose={() => setSelectedMovie(null)}
         />
-        
 
       </main>
 
