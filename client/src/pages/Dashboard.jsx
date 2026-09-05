@@ -37,80 +37,7 @@ const Dashboard = () => {
 
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white">
-
-
-      {/* ================= NAVBAR ================= */}
-
-      <nav
-        className="
-          sticky
-          top-0
-          z-40
-          h-20
-          px-6
-          md:px-10
-          flex
-          items-center
-          justify-between
-          bg-[#080808]/90
-          backdrop-blur-xl
-          border-b
-          border-white/10
-        "
-      >
-
-        {/* Logo */}
-
-        <div
-          className="
-            text-2xl
-            font-bold
-          "
-        >
-          Cine<span className="text-[#d4af37]">Plan</span>
-        </div>
-
-
-        {/* User Profile */}
-
-        <div
-          className="
-            flex
-            items-center
-            gap-3
-          "
-        >
-
-          <img
-            src="https://i.pravatar.cc/100?img=12"
-            alt="Profile"
-            className="
-              w-10
-              h-10
-              rounded-full
-              object-cover
-              border
-              border-white/10
-            "
-          />
-
-          <div className="hidden sm:block">
-
-            <p className="text-sm font-semibold">
-              Uddhav
-            </p>
-
-            <p className="text-xs text-gray-500">
-              CinePlan User
-            </p>
-
-          </div>
-
-        </div>
-
-      </nav>
-
+    <div className="min-h-screen bg-[#080808] text-white pt-20">
 
       {/* ================= CONTENT ================= */}
 
@@ -123,7 +50,6 @@ const Dashboard = () => {
           py-10
         "
       >
-
 
         {/* ================= WELCOME ================= */}
 
@@ -267,7 +193,6 @@ const Dashboard = () => {
               gap-4
             "
           >
-
 
             {/* Completed Movies */}
 
@@ -430,7 +355,6 @@ const Dashboard = () => {
           </div>
 
         </section>
-
 
       </main>
 
