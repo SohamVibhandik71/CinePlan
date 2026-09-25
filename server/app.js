@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import userRouter from "./src/routes/userRoutes.js";
+import contentRouter from "./src/routes/contentRoutes.js";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use("/api/status", (req, res) => {
 });
 
 //routes
-app.use("/api/user", userRouter)
+app.use("/api/user", userRouter);
+app.use("/api/content",contentRouter);
 
 export default app;
