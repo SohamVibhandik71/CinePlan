@@ -126,11 +126,91 @@ const getMovieDetails = async (id) => {
         throw error;
     }
 };
+
+const getTVDetails = async (id) => {
+    try {
+        const response = await axios.get(
+            `${process.env.TMDB_BASE_URL}/tv/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`
+                },
+                params: {
+                    append_to_response: "credits"
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("TMDB TV Details API Error:", error.message);
+        throw error;
+    }
+};
+
+const getTVSeasonDetails = async (id, seasonNumber) => {
+    try {
+        const response = await axios.get(
+            `${process.env.TMDB_BASE_URL}/tv/${id}/season/${seasonNumber}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("TMDB TV Season API Error:", error.message);
+        throw error;
+    }
+};
+
+const getMovieProviders = async (id) => {
+    try {
+        const response = await axios.get(
+            `${process.env.TMDB_BASE_URL}/movie/${id}/watch/providers`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("TMDB Movie Providers API Error:", error.message);
+        throw error;
+    }
+};
+
+const getTVProviders = async (id) => {
+    try {
+        const response = await axios.get(
+            `${process.env.TMDB_BASE_URL}/tv/${id}/watch/providers`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("TMDB TV Providers API Error:", error.message);
+        throw error;
+    }
+};
+
 export {
     getPopularMovies,
     getPopularTV,
     getAnimeMovies,
     getAnimeTV,
     searchContent,
-    getMovieDetails
+    getMovieDetails,
+    getTVDetails,
+    getTVSeasonDetails,
+    getMovieProviders,
+    getTVProviders
 };

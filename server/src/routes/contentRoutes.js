@@ -4,7 +4,11 @@ import {
     getTVShows,
     getAnime,
     search,
-    getMovie
+    getMovie,
+    getTVShow,
+    getTVSeason,
+    getMovieProviderDetails,
+    getTVProviderDetails
 } from "../controllers/contentController.js";
 
 
@@ -14,6 +18,9 @@ contentRouter.get("/movies", getMovies);
 contentRouter.get("/tv", getTVShows);
 contentRouter.get("/anime", getAnime);
 contentRouter.get("/search", search);
+contentRouter.get("/movie/:id/providers", getMovieProviderDetails);
 contentRouter.get("/movie/:id", getMovie);
-
+contentRouter.get("/tv/:id/season/:season", getTVSeason);
+contentRouter.get("/tv/:id/providers", getTVProviderDetails);
+contentRouter.get("/tv/:id", getTVShow);
 export default contentRouter;

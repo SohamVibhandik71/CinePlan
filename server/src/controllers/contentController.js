@@ -4,7 +4,11 @@ import {
     getAnimeMovies,
     getAnimeTV,
     searchContent,
-    getMovieDetails
+    getMovieDetails,
+    getTVDetails,
+    getTVSeasonDetails,
+    getMovieProviders,
+    getTVProviders
 } from "../../services/tmdbServices.js";
 
 import {
@@ -13,7 +17,10 @@ import {
     mapAnimeMovie,
     mapAnimeTV,
     mapSearchResult,
-    mapMovieDetails
+    mapMovieDetails,
+    mapTVDetails,
+    mapTVSeason,
+    mapProviders
 } from "../utils/contentMapper.js";
 
 
@@ -155,6 +162,103 @@ export const getMovie = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Failed to fetch movie details"
+        });
+    }
+};
+
+export const getTVShow = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const show = await getTVDetails(id);
+
+        const mappedShow = mapTVDetails(show);
+
+        res.status(200).json({
+            success: true,
+            data: mappedShow
+        });
+    } catch (error) {
+        console.error("Error fetching TV details:", error);
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+export const getTVSeason = async (req, res) => {
+    try {
+        const { id, season } = req.params;
+
+        const seasonNumber = Number(season);
+
+        if (Number.isNaN(seasonNumber) || seasonNumber < 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid season number"
+            });
+        }
+
+        const seasonData = await getTVSeasonDetails(id, seasonNumber);
+
+        const mappedSeason = mapTVSeason(seasonData);
+
+        res.status(200).json({
+            success: true,
+            data: mappedSeason
+        });
+    } catch (error) {
+        console.error("Error fetching TV season:", error.message);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch TV season"
+        });
+    }
+};
+
+export const getMovieProviderDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const providers = await getMovieProviders(id);
+
+        const mappedProviders = mapProviders(providers, "IN");
+
+        res.status(200).json({
+            success: true,
+            data: mappedProviders
+        });
+    } catch (error) {
+        console.error("Error fetching movie providers:", error.message);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch movie providers"
+        });
+    }
+};
+
+export const getTVProviderDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const providers = await getTVProviders(id);
+
+        const mappedProviders = mapProviders(providers, "IN");
+
+        res.status(200).json({
+            success: true,
+            data: mappedProviders
+        });
+    } catch (error) {
+        console.error("Error fetching TV providers:", error.message);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch TV providers"
         });
     }
 };
