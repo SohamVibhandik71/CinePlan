@@ -5,36 +5,43 @@ import User from '../models/User.js';
 
 export const protectRoute = async (req, res, next) => {
     try {
-        const token = req.headers.token; //expecting token from client in req header
+        const authHeader = req.headers.authorization;
 
-        if(!token){
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({
-                success : false,
-                message : "Unauthorized User, Login again"
-            })
+                success: false,
+                message: "Unauthorized User, Login again"
+            });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); //verify the token using the secret key
+        const token = authHeader.split(" ")[1];
 
-        const user = await User.findById(decoded.user_id).select("-passwordHash"); //taking everything except password
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
 
-        if(!user) return res.status(401).json({
-            success : false,
-            message : "User not found!"
-        });
+        const user = await User.findById(decoded.user_id)
+            .select("-passwordHash");
 
-        //if user is found then add it to req object
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "User not found!"
+            });
+        }
+
         req.user = user;
 
         next();
 
-    }catch(error) {
+    } catch (error) {
         return res.status(401).json({
-            success : false,
-            message : "Unauthorized User, Login again"
+            success: false,
+            message: "Unauthorized User, Login again"
         });
     }
-}
+};
 
 // function to get authenticated user data assuming protectRoute is already checked the authentication and added the user in req
 

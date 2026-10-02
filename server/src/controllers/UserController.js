@@ -18,7 +18,7 @@ export const signUp = async (req, res) => {
         }
 
         // Check if account already exists
-        const user = await User.findOne({ email }).select("-password");
+        const user = await User.findOne({ email });
 
         if (user) {
             return res.status(409).json({
