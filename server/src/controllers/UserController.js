@@ -18,7 +18,7 @@ export const signUp = async (req, res) => {
         }
 
         // Check if account already exists
-        const user = await User.findOne({ email }).select("-password");
+        const user = await User.findOne({ email });
 
         if (user) {
             return res.status(409).json({
@@ -119,3 +119,12 @@ export const login = async (req, res) => {
         });
     }
 };
+
+// logout
+export const logout = async (req, res) => {
+    // jwt token is sent to the client and stored in local storage or cookies. To logout, simply do localStorage.removeItem("token");
+    return res.status(200).json({
+        success: true,
+        message: "Logout Successful"
+    });
+};    
