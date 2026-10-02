@@ -129,19 +129,29 @@ const getMovieDetails = async (id) => {
 
 const getTVDetails = async (id) => {
     try {
-        const response = await axios.get(
+        const detailsResponse = await axios.get(
             `${process.env.TMDB_BASE_URL}/tv/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`
-                },
-                params: {
-                    append_to_response: "credits"
                 }
             }
         );
 
-        return response.data;
+        const creditsResponse = await axios.get(
+            `${process.env.TMDB_BASE_URL}/tv/${id}/credits`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`
+                }
+            }
+        );
+
+        return {
+            ...detailsResponse.data,
+            credits: creditsResponse.data
+        };
+
     } catch (error) {
         console.error("TMDB TV Details API Error:", error.message);
         throw error;
@@ -202,6 +212,19 @@ const getTVProviders = async (id) => {
     }
 };
 
+const getTVSeasons = async (id) => {
+  const response = await axios.get(
+    `${process.env.TMDB_BASE_URL}/tv/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`
+      }
+    }
+  );
+
+  return response;
+};
+
 export {
     getPopularMovies,
     getPopularTV,
@@ -212,5 +235,6 @@ export {
     getTVDetails,
     getTVSeasonDetails,
     getMovieProviders,
-    getTVProviders
+    getTVProviders,
+    getTVSeasons
 };
