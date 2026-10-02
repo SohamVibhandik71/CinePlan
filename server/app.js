@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import userRouter from "./src/routes/userRoutes.js";
 import contentRouter from "./src/routes/contentRoutes.js";
+import libraryRouter from "./src/routes/libraryRoutes.js";
 
 dotenv.config();
 
@@ -20,5 +21,5 @@ app.use("/api/status", (req, res) => {
 //routes
 app.use("/api/user", userRouter);
 app.use("/api/content",contentRouter);
-
+app.use("/api/library", libraryRouter);
 export default app;
