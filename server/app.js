@@ -4,6 +4,8 @@ import userRouter from "./src/routes/userRoutes.js";
 import contentRouter from "./src/routes/contentRoutes.js";
 import libraryRouter from "./src/routes/libraryRoutes.js";
 import progressRouter from "./src/routes/progressRoutes.js";
+import reviewRouter from "./src/routes/reviewRoutes.js";
+
 
 dotenv.config();
 
@@ -24,4 +26,6 @@ app.use("/api/user", userRouter);
 app.use("/api/content",contentRouter);
 app.use("/api/library", libraryRouter);
 app.use("/api/progress", progressRouter);
+app.use("/api/reviews", reviewRouter);
+
 export default app;
