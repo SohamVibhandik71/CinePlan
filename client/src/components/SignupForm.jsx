@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import FormInput from './FormInput'
 import GoogleSignInButton from './GoogleSignInButton'
+import axios from 'axios'
 
 export default function SignupForm({ onLoadingChange }) {
+  console.log("API URL:", import.meta.env.VITE_BASE_URL)
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [visibleFields, setVisibleFields] = useState({ password: false, confirmPassword: false })
   const [errors, setErrors] = useState({})
@@ -12,22 +14,60 @@ export default function SignupForm({ onLoadingChange }) {
     return (event) => setForm((current) => ({ ...current, [field]: event.target.value }))
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
+
     const nextErrors = {}
-    if (!form.name.trim()) nextErrors.name = 'Name is required.'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) nextErrors.email = 'Please enter a valid email address.'
-    if (form.password.length < 8) nextErrors.password = 'Password must be at least 8 characters.'
-    if (form.password !== form.confirmPassword) nextErrors.confirmPassword = 'Passwords do not match.'
+
+    if (!form.name.trim()) {
+      nextErrors.name = 'Name is required.'
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      nextErrors.email = 'Please enter a valid email address.'
+    }
+
+    if (form.password.length < 8) {
+      nextErrors.password = 'Password must be at least 8 characters.'
+    }
+
+    if (form.password !== form.confirmPassword) {
+      nextErrors.confirmPassword = 'Passwords do not match.'
+    }
+
     setErrors(nextErrors)
+
     if (Object.keys(nextErrors).length) return
 
     setLoading(true)
     onLoadingChange(true)
-    window.setTimeout(() => {
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/user/signup`,
+        {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          password: form.password,
+        }
+      )
+
+      const data = response.data
+
+      localStorage.setItem('token', data.token)
+
+      window.location.href = '/dashboard'
+
+    } catch (error) {
+      console.error('Signup error:', error)
+
+      setErrors({
+        form: error.response?.data?.message || 'Unable to connect to the server.',
+      })
+    } finally {
       setLoading(false)
       onLoadingChange(false)
-    }, 1400)
+    }
   }
 
   function toggleVisibility(field) {

@@ -1,221 +1,266 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import {
+  House,
+  Search,
+  LayoutDashboard,
+  Library,
+  Sparkles,
+  LogOut,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = () => {
 
-  const navItems = [
-    { to: "/dashboard", label: "Dashboard" },
-    { to: "/browse", label: "Browse" },
-    { to: "/library", label: "Library" },
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/";
+  };
+
+  const primaryItems = [
+    {
+      to: "/home",
+      label: "Home",
+      icon: House,
+    },
+    {
+      to: "/browse",
+      label: "Browse",
+      icon: Search,
+    },
+  ];
+
+  const userItems = [
+    {
+      to: "/dashboard",
+      label: "Dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      to: "/library",
+      label: "Library",
+      icon: Library,
+    },
+    {
+      to: "/recommendations",
+      label: "Recommendations",
+      icon: Sparkles,
+    },
   ];
 
   return (
-    <>
-      {/* ================= BACKDROP ================= */}
+    <aside
+      className="
+        fixed
+        top-0
+        left-0
+        z-50
+        h-screen
+        w-72
+        border-r
+        border-white/10
+        bg-[#0d0d0d]
+        shadow-2xl
+      "
+    >
 
-      {isOpen && (
-        <div
-          onClick={onClose}
-          className="
-            fixed
-            inset-0
-            z-40
-            bg-black/60
-            backdrop-blur-sm
-          "
-        />
-      )}
+      <div className="flex h-full flex-col p-6">
 
+        {/* ================= LOGO ================= */}
 
-      {/* ================= SIDEBAR ================= */}
+        <div className="mb-10 px-3">
 
-      <aside
-        className={`
-          fixed
-          top-0
-          left-0
-          z-50
-          h-screen
-          w-72
-          bg-[#0d0d0d]
-          border-r
-          border-white/10
-          shadow-2xl
-          transition-transform
-          duration-300
-          ease-in-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        `}
-      >
+          <h1 className="text-2xl font-semibold tracking-wide text-[#d4af37]">
+            CinePlan
+          </h1>
 
-        <div className="
-          h-full
-          flex
-          flex-col
-          p-6
-        ">
+          <p className="mt-1 text-xs tracking-wider text-gray-500">
+            PLAN. WATCH. ENJOY.
+          </p>
+
+        </div>
 
 
-          {/* ================= CLOSE BUTTON ================= */}
+        {/* ================= NAVIGATION ================= */}
 
-          <button
-            onClick={onClose}
-            className="
-              absolute
-              top-5
-              right-5
-              w-9
-              h-9
-              flex
-              items-center
-              justify-center
-              rounded-lg
-              text-white
-              text-2xl
-              hover:bg-white/10
-              transition
-            "
-          >
-            ×
-          </button>
+        <nav className="flex-1">
+
+          {/* PRIMARY NAVIGATION */}
+
+          <div className="space-y-2">
+
+            {primaryItems.map((item) => {
+
+              const Icon = item.icon;
+
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => `
+                    flex
+                    items-center
+                    gap-3
+                    rounded-lg
+                    px-4
+                    py-3
+                    text-sm
+                    font-medium
+                    transition-all
+                    duration-200
+                    ${
+                      isActive
+                        ? "bg-[#d4af37] text-black shadow-[0_0_15px_rgba(212,175,55,0.15)]"
+                        : "text-gray-400 hover:bg-white/10 hover:text-white"
+                    }
+                  `}
+                >
+                  <Icon
+                    size={19}
+                    strokeWidth={1.8}
+                  />
+
+                  <span>
+                    {item.label}
+                  </span>
+
+                </NavLink>
+              );
+
+            })}
+
+          </div>
 
 
-          {/* ================= PROFILE ================= */}
+          {/* SEPARATOR */}
 
-          <div className="
-            flex
-            flex-col
-            items-center
-            pt-8
-            pb-8
-            border-b
-            border-white/10
-          ">
+          <div className="my-6 h-px bg-white/10" />
+
+
+          {/* USER NAVIGATION */}
+
+          <div className="space-y-2">
+
+            {userItems.map((item) => {
+
+              const Icon = item.icon;
+
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => `
+                    flex
+                    items-center
+                    gap-3
+                    rounded-lg
+                    px-4
+                    py-3
+                    text-sm
+                    font-medium
+                    transition-all
+                    duration-200
+                    ${
+                      isActive
+                        ? "bg-[#d4af37] text-black shadow-[0_0_15px_rgba(212,175,55,0.15)]"
+                        : "text-gray-400 hover:bg-white/10 hover:text-white"
+                    }
+                  `}
+                >
+
+                  <Icon
+                    size={19}
+                    strokeWidth={1.8}
+                  />
+
+                  <span>
+                    {item.label}
+                  </span>
+
+                </NavLink>
+              );
+
+            })}
+
+          </div>
+
+        </nav>
+
+
+        {/* ================= PROFILE ================= */}
+
+        <div className="mb-5 border-t border-white/10 pt-5">
+
+          <div className="flex items-center gap-3 px-2">
 
             <img
               src="https://i.pravatar.cc/150?img=12"
               alt="Profile"
               className="
-                w-20
-                h-20
+                h-10
+                w-10
                 rounded-full
                 object-cover
-                border-2
-                border-[#d4af37]
+                border
+                border-[#d4af37]/40
               "
             />
 
-            <h2 className="
-              mt-4
-              text-lg
-              font-semibold
-              text-white
-            ">
-              Uddhav
-            </h2>
+            <div>
 
-            <p className="
-              mt-1
-              text-sm
-              text-gray-500
-            ">
-              CinePlan User
-            </p>
+              <p className="text-sm font-semibold text-white">
+                Uddhav
+              </p>
 
-          </div>
-
-
-          {/* ================= NAVIGATION ================= */}
-
-          <nav className="
-            flex-1
-            mt-8
-          ">
-
-            <p className="
-              px-3
-              mb-3
-              text-xs
-              uppercase
-              tracking-widest
-              text-gray-600
-            ">
-              Menu
-            </p>
-
-
-            <div className="space-y-2">
-
-              {navItems.map((item) => (
-
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={onClose}
-                  className={({ isActive }) => `
-                    flex
-                    items-center
-                    px-4
-                    py-3
-                    rounded-lg
-                    text-sm
-                    font-medium
-                    transition
-
-                    ${
-                      isActive
-                        ? "bg-[#d4af37] text-black"
-                        : "text-gray-400 hover:text-white hover:bg-white/10"
-                    }
-                  `}
-                >
-                  {item.label}
-                </NavLink>
-
-              ))}
+              <p className="text-xs text-gray-500">
+                CinePlan User
+              </p>
 
             </div>
-
-          </nav>
-
-
-          {/* ================= SIGN OUT ================= */}
-
-          <div className="
-            pt-6
-            border-t
-            border-white/10
-          ">
-
-            <button
-              onClick={() => {
-                console.log("Sign out clicked");
-              }}
-              className="
-                w-full
-                flex
-                items-center
-                justify-center
-                gap-2
-                px-4
-                py-3
-                rounded-lg
-                text-sm
-                font-medium
-                text-red-400
-                hover:bg-red-500/10
-                transition
-              "
-            >
-              Sign Out
-            </button>
 
           </div>
 
         </div>
 
-      </aside>
-    </>
+
+        {/* ================= SIGN OUT ================= */}
+
+        <button
+          onClick={handleLogout}
+          className="
+            flex
+            w-full
+            items-center
+            gap-3
+            rounded-lg
+            px-4
+            py-3
+            text-sm
+            font-medium
+            text-gray-400
+            transition-all
+            duration-200
+            hover:bg-red-500/10
+            hover:text-red-400
+          "
+        >
+
+          <LogOut
+            size={19}
+            strokeWidth={1.8}
+          />
+
+          <span>
+            Sign Out
+          </span>
+
+        </button>
+
+      </div>
+
+    </aside>
   );
 };
 

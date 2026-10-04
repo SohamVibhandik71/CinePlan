@@ -1,31 +1,16 @@
-import React, { useState } from 'react';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Landingpage from './pages/Landingpage';
-import { Route, Routes, useLocation } from 'react-router-dom';
-import Home from './pages/Home';
-import Browse from './pages/Browse';
-import Library from './pages/Library';
-import Dashboard from './pages/Dashboard';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
+import React from 'react'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import Landingpage from './pages/Landingpage'
+import { Route, Routes } from 'react-router-dom'
+import Home from './pages/Home'
+import Browse from './pages/Browse'
+import Library from './pages/Library'
+import Dashboard from './pages/Dashboard'
 
 const App = () => {
-  const location = useLocation();
-
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const showNavbar =
-    location.pathname === "/dashboard" ||
-    location.pathname === "/browse" ||
-    location.pathname === "/library";
   return (
-
-    
-     <div>
-
-     
-
+    <div>
       <Routes>
 
         <Route
@@ -44,6 +29,11 @@ const App = () => {
         />
 
         <Route
+          path="/home"
+          element={<Home />}
+        />
+
+        <Route
           path="/dashboard"
           element={<Dashboard />}
         />
@@ -59,9 +49,8 @@ const App = () => {
         />
 
       </Routes>
-
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

@@ -1,119 +1,162 @@
-import React, { useState } from 'react'
-import { dummyMovies } from '../assets/assets';
-import Moviecard from '../components/Moviecard';
-import MovieModal from '../components/MovieModel';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, Search } from "lucide-react";
+
+import { dummyMovies } from "../assets/assets";
+import Moviecard from "../components/Moviecard";
+import MovieModal from "../components/MovieModel";
 
 const Browse = () => {
-
-  const category = [
-    "Anime",
-    "Movies",
-    "Series",
-  ];
+  const categories = ["Anime", "Movies", "Series"];
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [search, setSearch] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
 
+  const filteredMovies = dummyMovies
+    .filter((movie) => {
+      if (!selectedCategory) return true;
+      return movie.type === selectedCategory;
+    })
+    .filter((movie) => {
+      if (!search.trim()) return true;
+
+      return movie.name
+        .toLowerCase()
+        .includes(search.toLowerCase());
+    });
+
   return (
+    <div className="min-h-screen bg-[#080808] text-white">
 
-    <div className="min-h-screen bg-[#080808] text-white pt-20">
+      {/* ================= HEADER ================= */}
 
-      {/* ================= BROWSE CONTROLS ================= */}
+      <div className="border-b border-white/10 px-6 py-5 md:px-10">
+
+        {/* Back to Home */}
+
+        <Link
+          to="/home"
+          className="
+            inline-flex
+            items-center
+            gap-2
+            rounded-lg
+            border
+            border-[#d4af37]/40
+            bg-[#d4af37]/10
+            px-3
+            py-2
+            text-sm
+            font-medium
+            text-[#f2ca50]
+            transition-all
+            duration-200
+            hover:border-[#d4af37]
+            hover:bg-[#d4af37]
+            hover:text-black
+            hover:shadow-[0_0_15px_rgba(212,175,55,0.25)]
+          "
+        >
+          <ArrowLeft size={16} />
+          <span>Back to Home</span>
+        </Link>
+
+        {/* Title */}
+
+        <div className="mt-6">
+          <h1 className="text-3xl font-bold md:text-4xl">
+            Browse
+          </h1>
+
+          <p className="mt-2 text-gray-500">
+            Discover something worth watching
+          </p>
+        </div>
+
+      </div>
+
+      {/* ================= CONTROLS ================= */}
 
       <div
         className="
-          h-20
-          px-6
-          md:px-10
           flex
-          items-center
-          justify-between
-          gap-6
-          bg-[#080808]
+          flex-col
+          gap-4
           border-b
           border-white/10
+          px-6
+          py-4
+          md:flex-row
+          md:items-center
+          md:justify-between
+          md:px-10
         "
       >
 
         {/* Categories */}
 
-        <div
-          className="
-            hidden
-            md:flex
-            items-center
-            justify-center
-            gap-2
-            flex-1
-          "
-        >
+        <div className="flex items-center gap-2 overflow-x-auto">
 
-          {category.map((item) => (
-            <button
-              key={item}
-              onClick={() =>
-                setSelectedCategory(
-                  selectedCategory === item ? "" : item
-                )
-              }
-              className={`
-                px-5
-                py-2
-                rounded-full
-                text-sm
-                font-medium
-                transition
-                ${
-                  selectedCategory === item
-                    ? "bg-[#d4af37] text-black"
-                    : "text-gray-400 hover:text-white hover:bg-white/10"
+          {categories.map((category) => {
+            const active = selectedCategory === category;
+
+            return (
+              <button
+                key={category}
+                onClick={() =>
+                  setSelectedCategory(active ? "" : category)
                 }
-              `}
-            >
-              {item}
-            </button>
-          ))}
+                className={`
+                  shrink-0
+                  rounded-full
+                  px-5
+                  py-2
+                  text-sm
+                  font-medium
+                  transition
+                  ${
+                    active
+                      ? "bg-[#d4af37] text-black"
+                      : "text-gray-400 hover:bg-white/10 hover:text-white"
+                  }
+                `}
+              >
+                {category}
+              </button>
+            );
+          })}
 
         </div>
 
-
         {/* Search */}
 
-        <div
-          className="
-            relative
-            w-full
-            sm:w-56
-            md:w-72
-            shrink-0
-            ml-auto
-          "
-        >
+        <div className="relative w-full md:w-64">
 
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search movies..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="
-              w-full
               h-10
-              px-4
-              pr-10
+              w-full
               rounded-full
-              bg-white/5
               border
               border-white/10
-              outline-none
+              bg-white/5
+              px-4
+              pr-10
               text-sm
               text-white
+              outline-none
               placeholder:text-gray-500
               focus:border-[#d4af37]/60
             "
           />
 
-          <span
+          <Search
+            size={17}
             className="
               absolute
               right-4
@@ -121,107 +164,57 @@ const Browse = () => {
               -translate-y-1/2
               text-gray-500
             "
-          >
-            🔍
-          </span>
+          />
 
         </div>
 
       </div>
 
+      {/* ================= MOVIES ================= */}
 
-      {/* ================= CONTENT ================= */}
+      <main className="mx-auto max-w-[1600px] px-6 py-8 md:px-10">
 
-      <main
-        className="
-          max-w-[1600px]
-          mx-auto
-          px-6
-          md:px-10
-          py-10
-        "
-      >
-
-        {/* Heading */}
-
-        <div className="mb-8">
-
-          <h1 className="
-            text-3xl
-            md:text-4xl
-            font-bold
-          ">
-            Browse {selectedCategory}
-          </h1>
-
-          <p className="
-            text-gray-500
-            mt-2
-          ">
-            Discover something worth watching
-          </p>
-
-        </div>
-
-
-        {/* ================= CARDS ================= */}
-
-        <div
-          className="
-            grid
-            grid-cols-2
-            sm:grid-cols-3
-            md:grid-cols-4
-            lg:grid-cols-5
-            xl:grid-cols-6
-            2xl:grid-cols-7
-            gap-4
-            md:gap-5
-          "
-        >
-
-          {dummyMovies
-
-            .filter((movie) => {
-              if (!selectedCategory) {
-                return true;
-              }
-
-              return movie.type === selectedCategory;
-            })
-
-            .filter((movie) => {
-              if (!search.trim()) {
-                return true;
-              }
-
-              return movie.name
-                .toLowerCase()
-                .includes(search.toLowerCase());
-            })
-
-            .map((movie) => (
+        {filteredMovies.length > 0 ? (
+          <div
+            className="
+              grid
+              grid-cols-2
+              gap-4
+              sm:grid-cols-3
+              md:grid-cols-4
+              lg:grid-cols-5
+              xl:grid-cols-6
+              2xl:grid-cols-7
+              md:gap-5
+            "
+          >
+            {filteredMovies.map((movie) => (
               <Moviecard
                 key={movie.id}
                 movie={movie}
                 onClick={() => setSelectedMovie(movie)}
               />
             ))}
-
-        </div>
-
-
-        {/* ================= MOVIE MODAL ================= */}
-
-        <MovieModal
-          movie={selectedMovie}
-          onClose={() => setSelectedMovie(null)}
-        />
+          </div>
+        ) : (
+          <div className="flex min-h-[300px] items-center justify-center">
+            <p className="text-gray-500">
+              No movies found.
+            </p>
+          </div>
+        )}
 
       </main>
 
-    </div>
-  )
-}
+      {/* ================= MOVIE MODAL ================= */}
 
-export default Browse
+      <MovieModal
+        movie={selectedMovie}
+        onClose={() => setSelectedMovie(null)}
+      />
+
+    </div>
+  );
+};
+
+export default Browse;
