@@ -24,18 +24,7 @@ const App = () => {
     
      <div>
 
-      {showNavbar && (
-        <>
-          <Navbar
-            onMenuClick={() => setIsSidebarOpen(true)}
-          />
-
-          <Sidebar
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-          />
-        </>
-      )}
+     
 
       <Routes>
 
