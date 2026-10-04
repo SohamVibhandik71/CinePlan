@@ -8,8 +8,16 @@ import {
   Sparkles,
   LogOut,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Sidebar = () => {
+
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/";
+  };
 
   const primaryItems = [
     {
@@ -51,34 +59,24 @@ const Sidebar = () => {
         z-50
         h-screen
         w-72
-        bg-[#0d0d0d]
         border-r
         border-white/10
+        bg-[#0d0d0d]
         shadow-2xl
       "
     >
 
       <div className="flex h-full flex-col p-6">
 
-        {/* ================= BRAND ================= */}
+        {/* ================= LOGO ================= */}
 
         <div className="mb-10 px-3">
 
-          <h1 className="
-            text-2xl
-            font-semibold
-            tracking-wide
-            text-[#d4af37]
-          ">
+          <h1 className="text-2xl font-semibold tracking-wide text-[#d4af37]">
             CinePlan
           </h1>
 
-          <p className="
-            mt-1
-            text-xs
-            tracking-wider
-            text-gray-500
-          ">
+          <p className="mt-1 text-xs tracking-wider text-gray-500">
             PLAN. WATCH. ENJOY.
           </p>
 
@@ -110,20 +108,24 @@ const Sidebar = () => {
                     py-3
                     text-sm
                     font-medium
-                    transition-colors
-
+                    transition-all
+                    duration-200
                     ${
                       isActive
-                        ? "bg-[#d4af37] text-black"
+                        ? "bg-[#d4af37] text-black shadow-[0_0_15px_rgba(212,175,55,0.15)]"
                         : "text-gray-400 hover:bg-white/10 hover:text-white"
                     }
                   `}
                 >
-                  <Icon size={19} strokeWidth={1.8} />
+                  <Icon
+                    size={19}
+                    strokeWidth={1.8}
+                  />
 
                   <span>
                     {item.label}
                   </span>
+
                 </NavLink>
               );
 
@@ -132,13 +134,9 @@ const Sidebar = () => {
           </div>
 
 
-          {/* ================= SEPARATOR ================= */}
+          {/* SEPARATOR */}
 
-          <div className="
-            my-6
-            h-px
-            bg-white/10
-          " />
+          <div className="my-6 h-px bg-white/10" />
 
 
           {/* USER NAVIGATION */}
@@ -162,20 +160,25 @@ const Sidebar = () => {
                     py-3
                     text-sm
                     font-medium
-                    transition-colors
-
+                    transition-all
+                    duration-200
                     ${
                       isActive
-                        ? "bg-[#d4af37] text-black"
+                        ? "bg-[#d4af37] text-black shadow-[0_0_15px_rgba(212,175,55,0.15)]"
                         : "text-gray-400 hover:bg-white/10 hover:text-white"
                     }
                   `}
                 >
-                  <Icon size={19} strokeWidth={1.8} />
+
+                  <Icon
+                    size={19}
+                    strokeWidth={1.8}
+                  />
 
                   <span>
                     {item.label}
                   </span>
+
                 </NavLink>
               );
 
@@ -188,19 +191,9 @@ const Sidebar = () => {
 
         {/* ================= PROFILE ================= */}
 
-        <div className="
-          mb-5
-          border-t
-          border-white/10
-          pt-5
-        ">
+        <div className="mb-5 border-t border-white/10 pt-5">
 
-          <div className="
-            flex
-            items-center
-            gap-3
-            px-2
-          ">
+          <div className="flex items-center gap-3 px-2">
 
             <img
               src="https://i.pravatar.cc/150?img=12"
@@ -209,26 +202,19 @@ const Sidebar = () => {
                 h-10
                 w-10
                 rounded-full
-                border
-                border-[#d4af37]
                 object-cover
+                border
+                border-[#d4af37]/40
               "
             />
 
             <div>
 
-              <p className="
-                text-sm
-                font-medium
-                text-white
-              ">
+              <p className="text-sm font-semibold text-white">
                 Uddhav
               </p>
 
-              <p className="
-                text-xs
-                text-gray-500
-              ">
+              <p className="text-xs text-gray-500">
                 CinePlan User
               </p>
 
@@ -242,27 +228,29 @@ const Sidebar = () => {
         {/* ================= SIGN OUT ================= */}
 
         <button
-          onClick={() => {
-            console.log("Sign out clicked");
-          }}
+          onClick={handleLogout}
           className="
             flex
             w-full
             items-center
-            justify-center
-            gap-2
+            gap-3
             rounded-lg
             px-4
             py-3
             text-sm
             font-medium
-            text-red-400
-            transition
+            text-gray-400
+            transition-all
+            duration-200
             hover:bg-red-500/10
+            hover:text-red-400
           "
         >
 
-          <LogOut size={18} />
+          <LogOut
+            size={19}
+            strokeWidth={1.8}
+          />
 
           <span>
             Sign Out
