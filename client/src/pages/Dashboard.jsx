@@ -1,32 +1,28 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+
 import { dummyMovies } from "../assets/assets";
 import Moviecard from "../components/Moviecard";
 import MovieModal from "../components/MovieModel";
 
 const Dashboard = () => {
 
-  // Movie currently selected for popup
   const [selectedMovie, setSelectedMovie] = useState(null);
-
 
   // ================= DASHBOARD DATA =================
 
-  // Continue watching
   const continueWatching = [
     dummyMovies[0],
     dummyMovies[1],
     dummyMovies[2],
   ];
 
-
-  // Today's plan
   const todaysPlan = [
     dummyMovies[3],
     dummyMovies[4],
   ];
 
-
-  // Statistics
   const stats = {
     completedMovies: 12,
     completedSeries: 7,
@@ -35,9 +31,42 @@ const Dashboard = () => {
     totalHours: 86,
   };
 
-
   return (
-    <div className="min-h-screen bg-[#080808] text-white pt-20">
+    <div className="min-h-screen bg-[#080808] text-white">
+
+      {/* ================= HEADER ================= */}
+
+      <div className="border-b border-white/10 px-6 py-5 md:px-10">
+
+        <Link
+          to="/home"
+          className="
+            inline-flex
+            items-center
+            gap-2
+            rounded-lg
+            border
+            border-[#d4af37]/40
+            bg-[#d4af37]/10
+            px-3
+            py-2
+            text-sm
+            font-medium
+            text-[#f2ca50]
+            transition-all
+            duration-200
+            hover:border-[#d4af37]
+            hover:bg-[#d4af37]
+            hover:text-black
+            hover:shadow-[0_0_15px_rgba(212,175,55,0.25)]
+          "
+        >
+          <ArrowLeft size={16} />
+          <span>Back to Home</span>
+        </Link>
+
+      </div>
+
 
       {/* ================= CONTENT ================= */}
 
@@ -55,13 +84,7 @@ const Dashboard = () => {
 
         <div className="mb-10">
 
-          <h1
-            className="
-              text-3xl
-              md:text-4xl
-              font-bold
-            "
-          >
+          <h1 className="text-3xl md:text-4xl font-bold">
             Welcome back
           </h1>
 
@@ -83,7 +106,6 @@ const Dashboard = () => {
             </h2>
 
           </div>
-
 
           <div
             className="
@@ -120,7 +142,6 @@ const Dashboard = () => {
           <h2 className="text-2xl font-bold mb-5">
             Today's Plan
           </h2>
-
 
           {todaysPlan.length > 0 ? (
 
@@ -183,7 +204,6 @@ const Dashboard = () => {
             Your Stats
           </h2>
 
-
           <div
             className="
               grid
@@ -196,28 +216,13 @@ const Dashboard = () => {
 
             {/* Completed Movies */}
 
-            <div
-              className="
-                p-6
-                rounded-xl
-                bg-white/[0.03]
-                border
-                border-white/10
-              "
-            >
+            <div className="p-6 rounded-xl bg-white/[0.03] border border-white/10">
 
               <p className="text-gray-500 text-sm">
                 Completed Movies
               </p>
 
-              <p
-                className="
-                  mt-2
-                  text-3xl
-                  font-bold
-                  text-[#d4af37]
-                "
-              >
+              <p className="mt-2 text-3xl font-bold text-[#d4af37]">
                 {stats.completedMovies}
               </p>
 
@@ -226,28 +231,13 @@ const Dashboard = () => {
 
             {/* Completed Series */}
 
-            <div
-              className="
-                p-6
-                rounded-xl
-                bg-white/[0.03]
-                border
-                border-white/10
-              "
-            >
+            <div className="p-6 rounded-xl bg-white/[0.03] border border-white/10">
 
               <p className="text-gray-500 text-sm">
                 Completed Series
               </p>
 
-              <p
-                className="
-                  mt-2
-                  text-3xl
-                  font-bold
-                  text-[#d4af37]
-                "
-              >
+              <p className="mt-2 text-3xl font-bold text-[#d4af37]">
                 {stats.completedSeries}
               </p>
 
@@ -256,28 +246,13 @@ const Dashboard = () => {
 
             {/* Completed Anime */}
 
-            <div
-              className="
-                p-6
-                rounded-xl
-                bg-white/[0.03]
-                border
-                border-white/10
-              "
-            >
+            <div className="p-6 rounded-xl bg-white/[0.03] border border-white/10">
 
               <p className="text-gray-500 text-sm">
                 Completed Anime
               </p>
 
-              <p
-                className="
-                  mt-2
-                  text-3xl
-                  font-bold
-                  text-[#d4af37]
-                "
-              >
+              <p className="mt-2 text-3xl font-bold text-[#d4af37]">
                 {stats.completedAnime}
               </p>
 
@@ -286,28 +261,13 @@ const Dashboard = () => {
 
             {/* Future Content */}
 
-            <div
-              className="
-                p-6
-                rounded-xl
-                bg-white/[0.03]
-                border
-                border-white/10
-              "
-            >
+            <div className="p-6 rounded-xl bg-white/[0.03] border border-white/10">
 
               <p className="text-gray-500 text-sm">
                 Future Content
               </p>
 
-              <p
-                className="
-                  mt-2
-                  text-3xl
-                  font-bold
-                  text-[#d4af37]
-                "
-              >
+              <p className="mt-2 text-3xl font-bold text-[#d4af37]">
                 {stats.futureContent}
               </p>
 
@@ -334,13 +294,7 @@ const Dashboard = () => {
 
               <div className="flex items-end gap-2 mt-2">
 
-                <p
-                  className="
-                    text-4xl
-                    font-bold
-                    text-[#d4af37]
-                  "
-                >
+                <p className="text-4xl font-bold text-[#d4af37]">
                   {stats.totalHours}
                 </p>
 

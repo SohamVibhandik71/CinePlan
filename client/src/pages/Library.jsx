@@ -1,42 +1,70 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+
 import { dummyMovies } from "../assets/assets";
 import Moviecard from "../components/Moviecard";
 import MovieModal from "../components/MovieModel";
 
 const Library = () => {
 
-  // Movie selected for popup
   const [selectedMovie, setSelectedMovie] = useState(null);
-
 
   // ================= LIBRARY DATA =================
 
-  // Continue Watching
   const continueWatching = [
     dummyMovies[0],
     dummyMovies[1],
     dummyMovies[2],
   ];
 
-
-  // Future Plans
   const futurePlans = [
     dummyMovies[3],
     dummyMovies[4],
     dummyMovies[5],
   ];
 
-
-  // Completed
   const completed = [
     dummyMovies[4],
     dummyMovies[2],
     dummyMovies[3],
   ];
 
-
   return (
-    <div className="min-h-screen bg-[#080808] text-white pt-20">
+    <div className="min-h-screen bg-[#080808] text-white">
+
+      {/* ================= HEADER ================= */}
+
+      <div className="border-b border-white/10 px-6 py-5 md:px-10">
+
+        <Link
+          to="/home"
+          className="
+            inline-flex
+            items-center
+            gap-2
+            rounded-lg
+            border
+            border-[#d4af37]/40
+            bg-[#d4af37]/10
+            px-3
+            py-2
+            text-sm
+            font-medium
+            text-[#f2ca50]
+            transition-all
+            duration-200
+            hover:border-[#d4af37]
+            hover:bg-[#d4af37]
+            hover:text-black
+            hover:shadow-[0_0_15px_rgba(212,175,55,0.25)]
+          "
+        >
+          <ArrowLeft size={16} />
+          <span>Back to Home</span>
+        </Link>
+
+      </div>
 
 
       {/* ================= CONTENT ================= */}
@@ -51,18 +79,11 @@ const Library = () => {
         "
       >
 
-
         {/* ================= HEADER ================= */}
 
         <div className="mb-10">
 
-          <h1
-            className="
-              text-3xl
-              md:text-4xl
-              font-bold
-            "
-          >
+          <h1 className="text-3xl md:text-4xl font-bold">
             My Library
           </h1>
 
@@ -80,7 +101,6 @@ const Library = () => {
           <h2 className="text-2xl font-bold mb-5">
             Continue Watching
           </h2>
-
 
           {continueWatching.length > 0 ? (
 
@@ -129,7 +149,6 @@ const Library = () => {
             Future Plans
           </h2>
 
-
           {futurePlans.length > 0 ? (
 
             <div
@@ -177,7 +196,6 @@ const Library = () => {
             Completed
           </h2>
 
-
           {completed.length > 0 ? (
 
             <div
@@ -215,7 +233,6 @@ const Library = () => {
           )}
 
         </section>
-
 
       </main>
 
