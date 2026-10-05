@@ -1,227 +1,211 @@
 import React from "react";
 
 const MovieModal = ({ movie, onClose }) => {
-
   if (!movie) return null;
+
+  const {
+    name,
+    title,
+    type,
+    poster,
+    rating,
+    overview,
+    releaseDate,
+    popularity,
+    description,
+  } = movie;
 
   return (
     <div
       className="
-        fixed
-        inset-0
-        z-50
-        flex
-        items-center
-        justify-center
+        fixed inset-0 z-50
+        flex items-center justify-center
+        bg-black/80 backdrop-blur-sm
         p-4
-        bg-black/70
-        backdrop-blur-md
       "
       onClick={onClose}
     >
-
-      {/* Modal */}
       <div
-        onClick={(e) => e.stopPropagation()}
         className="
           relative
-          w-full
-          max-w-4xl
+          w-full max-w-5xl
+          max-h-[90vh]
           overflow-hidden
           rounded-2xl
-          bg-[#121212]
-          border
-          border-white/10
+          bg-[#111111]
+          border border-white/10
           shadow-2xl
+          text-white
         "
+        onClick={(e) => e.stopPropagation()}
       >
-
         {/* Close Button */}
         <button
           onClick={onClose}
+          aria-label="Close modal"
           className="
-            absolute
-            top-4
-            right-4
-            z-10
-            w-9
-            h-9
+            absolute top-4 right-4 z-20
+            flex h-10 w-10 items-center justify-center
             rounded-full
-            bg-black/60
-            text-white
-            text-xl
-            hover:bg-white/20
+            bg-black/70
+            text-2xl text-white
+            backdrop-blur-sm
             transition
+            hover:bg-white/20
           "
         >
           ×
         </button>
 
-
-        <div className="grid md:grid-cols-[280px_1fr]">
-
+        <div className="grid max-h-[90vh] overflow-y-auto md:grid-cols-[320px_1fr]">
           {/* ================= POSTER ================= */}
-
-          <div className="h-[400px] md:h-[500px]">
-
+          <div className="relative h-[420px] md:h-full md:min-h-[560px]">
             <img
-              src={movie.poster}
-              alt={movie.name}
-              className="
-                w-full
-                h-full
-                object-cover
-              "
+              src={poster}
+              alt={name}
+              className="h-full w-full object-cover"
             />
 
+            {/* Poster Gradient */}
+            <div
+              className="
+                absolute inset-0
+                bg-gradient-to-t
+                from-black/60
+                via-transparent
+                to-transparent
+                md:bg-gradient-to-r
+              "
+            />
           </div>
 
+          {/* ================= CONTENT ================= */}
+          <div className="flex flex-col p-6 md:p-8 lg:p-10">
+            {/* Header */}
+            <div className="pr-10">
+              <p className="mb-2 text-sm font-medium uppercase tracking-wider text-[#d4af37]">
+                {type}
+              </p>
 
-          {/* ================= DETAILS ================= */}
+              <h1 className="text-3xl font-bold leading-tight md:text-4xl">
+                {name}
+              </h1>
 
-          <div className="p-6 md:p-8 text-white">
-
-            {/* Name */}
-
-            <h1 className="
-              text-3xl
-              md:text-4xl
-              font-bold
-            ">
-              {movie.name}
-            </h1>
-
-
-            {/* Category */}
-
-            <div className="
-              flex
-              items-center
-              gap-2
-              mt-4
-            ">
-
-              <span className="
-                px-3
-                py-1
-                rounded-full
-                bg-[#d4af37]/15
-                text-[#d4af37]
-                text-sm
-              ">
-                {movie.type}
-              </span>
-
+              {title && (
+                <p className="mt-2 text-lg text-gray-400">
+                  {title}
+                </p>
+              )}
             </div>
-
 
             {/* Rating */}
+            <div className="mt-6 flex items-center gap-3">
+              <span className="text-2xl text-[#d4af37]">★</span>
 
-            <div className="
-              flex
-              items-center
-              gap-2
-              mt-6
-            ">
-
-              <span className="
-                text-[#d4af37]
-                text-xl
-              ">
-                ★
+              <span className="text-xl font-semibold">
+                {rating}
               </span>
 
-              <span className="
-                text-lg
-                font-semibold
-              ">
-                {movie.rating}
-              </span>
-
-              <span className="text-gray-500">
+              <span className="text-sm text-gray-500">
                 / 10
               </span>
-
             </div>
 
+            {/* Movie Information */}
+            <div
+              className="
+                mt-7
+                grid grid-cols-2 gap-y-5
+                border-y border-white/10
+                py-6
+              "
+            >
+              <InfoItem
+                label="Release Date"
+                value={releaseDate}
+              />
 
-            {/* Information */}
+              <InfoItem
+                label="Popularity"
+                value={popularity}
+              />
 
-            <div className="
-              grid
-              grid-cols-2
-              gap-4
-              mt-6
-              py-5
-              border-y
-              border-white/10
-            ">
+              <InfoItem
+                label="Type"
+                value={type}
+              />
 
-              <div>
-
-                <p className="text-gray-500 text-sm">
-                  Runtime
-                </p>
-
-                <p className="mt-1">
-                  {movie.runtime}
-                </p>
-
-              </div>
-
-
-              <div>
-
-                <p className="text-gray-500 text-sm">
-                  Available At
-                </p>
-
-                <p className="mt-1">
-                  {movie.availableAt}
-                </p>
-
-              </div>
-
+              <InfoItem
+                label="Rating"
+                value={`${rating}/10`}
+              />
             </div>
 
+            {/* Overview */}
+            {overview && (
+              <section className="mt-7">
+                <h2 className="mb-2 text-lg font-semibold">
+                  Overview
+                </h2>
+
+                <p className="text-sm leading-7 text-gray-400">
+                  {overview}
+                </p>
+              </section>
+            )}
 
             {/* Description */}
+            {description && (
+              <section className="mt-6">
+                <h2 className="mb-2 text-lg font-semibold">
+                  Description
+                </h2>
 
-            <p className="
-              mt-6
-              text-gray-400
-              leading-relaxed
-            ">
-              {movie.description}
-            </p>
-
+                <p className="text-sm leading-7 text-gray-400">
+                  {description}
+                </p>
+              </section>
+            )}
 
             {/* Watchlist */}
-
             <button
               className="
                 mt-8
                 w-full
-                py-3
-                rounded-lg
+                rounded-xl
                 bg-[#d4af37]
-                text-black
+                px-6 py-3.5
                 font-semibold
-                hover:bg-[#e4c65a]
+                text-black
                 transition
+                hover:bg-[#e4c65a]
+                active:scale-[0.98]
               "
             >
               + Add to Watchlist
             </button>
-
           </div>
-
         </div>
-
       </div>
+    </div>
+  );
+};
 
+/* ================= INFO ITEM ================= */
+
+const InfoItem = ({ label, value }) => {
+  return (
+    <div>
+      <p className="text-xs uppercase tracking-wide text-gray-500">
+        {label}
+      </p>
+
+      <p className="mt-1 text-sm font-medium text-gray-200">
+        {value || "N/A"}
+      </p>
     </div>
   );
 };
 
 export default MovieModal;
+

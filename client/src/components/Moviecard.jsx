@@ -67,12 +67,12 @@ const Moviecard = ({ movie, onClick }) => {
         <h2
           className="
             text-white
-            text-sm
+            text-m
             font-semibold
             truncate
           "
         >
-          {movie.name}
+          {movie.title}
         </h2>
 
 

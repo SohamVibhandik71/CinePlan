@@ -1,42 +1,192 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2, Library as LibraryIcon } from "lucide-react";
+import axios from "axios";
 
-import { dummyMovies } from "../assets/assets";
 import Moviecard from "../components/Moviecard";
 import MovieModal from "../components/MovieModel";
 
 const Library = () => {
-
+  const [library, setLibrary] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  // ================= LIBRARY DATA =================
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const continueWatching = [
-    dummyMovies[0],
-    dummyMovies[1],
-    dummyMovies[2],
-  ];
+  // =====================================================
+  // GET AUTH TOKEN
+  // =====================================================
 
-  const futurePlans = [
-    dummyMovies[3],
-    dummyMovies[4],
-    dummyMovies[5],
-  ];
+  const getToken = () => {
+    return (
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("token")
+    );
+  };
 
-  const completed = [
-    dummyMovies[4],
-    dummyMovies[2],
-    dummyMovies[3],
-  ];
+  // =====================================================
+  // FETCH USER LIBRARY
+  // =====================================================
+
+  const fetchLibrary = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const token = getToken();
+
+      if (!token) {
+        setError("Please login to view your library.");
+        return;
+      }
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/library`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        setLibrary(response.data.data || []);
+      } else {
+        setError(
+          response.data.message || "Failed to load library."
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching library:", error);
+
+      setError(
+        error.response?.data?.message ||
+          "Unable to load your library."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =====================================================
+  // FETCH LIBRARY ON PAGE LOAD
+  // =====================================================
+
+  useEffect(() => {
+    fetchLibrary();
+  }, []);
+
+  // =====================================================
+  // CONVERT LIBRARY ITEM TO MOVIECARD FORMAT
+  // =====================================================
+
+  const formatMovie = (item) => {
+    return {
+      ...item,
+
+      // Moviecard / MovieModal may expect "name"
+      name: item.title,
+
+      // Keep original database ID
+      id: item._id,
+
+      // External movie API ID
+      externalId: item.externalId,
+
+      poster: item.poster,
+
+      type: item.type,
+
+      status: item.status,
+
+      genres: item.genres,
+
+      priority: item.priority,
+
+      progress: item.progress,
+    };
+  };
+
+  // =====================================================
+  // FILTER BY STATUS
+  // =====================================================
+
+  const continueWatching = library
+    .filter((item) => item.status === "watching")
+    .map(formatMovie);
+
+  const futurePlans = library
+    .filter((item) => item.status === "planned")
+    .map(formatMovie);
+
+  const completed = library
+    .filter((item) => item.status === "completed")
+    .map(formatMovie);
+
+  // =====================================================
+  // DELETE MOVIE FROM LIBRARY
+  // =====================================================
+
+  const removeFromLibrary = async (itemId) => {
+    try {
+      const token = getToken();
+
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/library/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Remove from UI immediately
+      setLibrary((prev) =>
+        prev.filter((item) => item._id !== itemId)
+      );
+
+      setSelectedMovie(null);
+    } catch (error) {
+      console.error(
+        "Error removing library item:",
+        error
+      );
+    }
+  };
+
+  // =====================================================
+  // LOADING STATE
+  // =====================================================
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#080808] text-white">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2
+            size={32}
+            className="animate-spin text-[#d4af37]"
+          />
+
+          <p className="text-sm text-gray-500">
+            Loading your library...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // =====================================================
+  // MAIN UI
+  // =====================================================
 
   return (
     <div className="min-h-screen bg-[#080808] text-white">
 
-      {/* ================= HEADER ================= */}
+      {/* =================================================
+          HEADER
+      ================================================= */}
 
       <div className="border-b border-white/10 px-6 py-5 md:px-10">
-
         <Link
           to="/home"
           className="
@@ -63,188 +213,217 @@ const Library = () => {
           <ArrowLeft size={16} />
           <span>Back to Home</span>
         </Link>
-
       </div>
 
-
-      {/* ================= CONTENT ================= */}
+      {/* =================================================
+          CONTENT
+      ================================================= */}
 
       <main
         className="
-          max-w-[1600px]
           mx-auto
+          max-w-[1600px]
           px-6
-          md:px-10
           py-10
+          md:px-10
         "
       >
 
-        {/* ================= HEADER ================= */}
+        {/* Page Header */}
 
         <div className="mb-10">
+          <div className="flex items-center gap-3">
+            <LibraryIcon
+              size={30}
+              className="text-[#d4af37]"
+            />
 
-          <h1 className="text-3xl md:text-4xl font-bold">
-            My Library
-          </h1>
+            <h1 className="text-3xl font-bold md:text-4xl">
+              My Library
+            </h1>
+          </div>
 
-          <p className="text-gray-500 mt-2">
-            Keep track of everything you're watching and planning.
+          <p className="mt-2 text-gray-500">
+            Keep track of everything you're watching and
+            planning.
           </p>
 
+          {/* Total count */}
+
+          <p className="mt-3 text-sm text-gray-600">
+            {library.length}{" "}
+            {library.length === 1 ? "item" : "items"} in
+            your library
+          </p>
         </div>
 
+        {/* =================================================
+            ERROR
+        ================================================= */}
 
-        {/* ================= CONTINUE WATCHING ================= */}
+        {error && (
+          <div
+            className="
+              mb-8
+              rounded-lg
+              border
+              border-red-500/20
+              bg-red-500/10
+              px-5
+              py-4
+              text-sm
+              text-red-400
+            "
+          >
+            {error}
+          </div>
+        )}
 
-        <section className="mb-12">
+        {/* =================================================
+            EMPTY LIBRARY
+        ================================================= */}
 
-          <h2 className="text-2xl font-bold mb-5">
-            Continue Watching
-          </h2>
+        {!error && library.length === 0 && (
+          <div
+            className="
+              flex
+              min-h-[400px]
+              flex-col
+              items-center
+              justify-center
+              rounded-2xl
+              border
+              border-white/10
+              bg-white/[0.02]
+              text-center
+            "
+          >
+            <LibraryIcon
+              size={50}
+              className="mb-5 text-gray-700"
+            />
 
-          {continueWatching.length > 0 ? (
+            <h2 className="text-xl font-semibold">
+              Your library is empty
+            </h2>
 
-            <div
-              className="
-                grid
-                grid-cols-2
-                sm:grid-cols-3
-                md:grid-cols-4
-                lg:grid-cols-5
-                xl:grid-cols-6
-                2xl:grid-cols-7
-                gap-4
-                md:gap-5
-              "
-            >
-
-              {continueWatching.map((movie) => (
-
-                <Moviecard
-                  key={movie.id}
-                  movie={movie}
-                  onClick={() => setSelectedMovie(movie)}
-                />
-
-              ))}
-
-            </div>
-
-          ) : (
-
-            <p className="text-gray-500">
-              Nothing here yet.
+            <p className="mt-2 max-w-md text-sm text-gray-500">
+              Movies and shows you add to your library will
+              appear here.
             </p>
 
-          )}
-
-        </section>
-
-
-        {/* ================= FUTURE PLANS ================= */}
-
-        <section className="mb-12">
-
-          <h2 className="text-2xl font-bold mb-5">
-            Future Plans
-          </h2>
-
-          {futurePlans.length > 0 ? (
-
-            <div
+            <Link
+              to="/home"
               className="
-                grid
-                grid-cols-2
-                sm:grid-cols-3
-                md:grid-cols-4
-                lg:grid-cols-5
-                xl:grid-cols-6
-                2xl:grid-cols-7
-                gap-4
-                md:gap-5
+                mt-6
+                rounded-lg
+                bg-[#d4af37]
+                px-5
+                py-3
+                text-sm
+                font-semibold
+                text-black
+                transition
+                hover:bg-[#e4c65a]
               "
             >
+              Browse Movies
+            </Link>
+          </div>
+        )}
 
-              {futurePlans.map((movie) => (
+        {/* =================================================
+            CONTINUE WATCHING
+        ================================================= */}
 
-                <Moviecard
-                  key={movie.id}
-                  movie={movie}
-                  onClick={() => setSelectedMovie(movie)}
-                />
+        {continueWatching.length > 0 && (
+          <LibrarySection
+            title="Continue Watching"
+            movies={continueWatching}
+            onMovieClick={setSelectedMovie}
+          />
+        )}
 
-              ))}
+        {/* =================================================
+            FUTURE PLANS
+        ================================================= */}
 
-            </div>
+        {futurePlans.length > 0 && (
+          <LibrarySection
+            title="Future Plans"
+            movies={futurePlans}
+            onMovieClick={setSelectedMovie}
+          />
+        )}
 
-          ) : (
+        {/* =================================================
+            COMPLETED
+        ================================================= */}
 
-            <p className="text-gray-500">
-              No future plans yet.
-            </p>
-
-          )}
-
-        </section>
-
-
-        {/* ================= COMPLETED ================= */}
-
-        <section className="mb-12">
-
-          <h2 className="text-2xl font-bold mb-5">
-            Completed
-          </h2>
-
-          {completed.length > 0 ? (
-
-            <div
-              className="
-                grid
-                grid-cols-2
-                sm:grid-cols-3
-                md:grid-cols-4
-                lg:grid-cols-5
-                xl:grid-cols-6
-                2xl:grid-cols-7
-                gap-4
-                md:gap-5
-              "
-            >
-
-              {completed.map((movie) => (
-
-                <Moviecard
-                  key={movie.id}
-                  movie={movie}
-                  onClick={() => setSelectedMovie(movie)}
-                />
-
-              ))}
-
-            </div>
-
-          ) : (
-
-            <p className="text-gray-500">
-              No completed content yet.
-            </p>
-
-          )}
-
-        </section>
-
+        {completed.length > 0 && (
+          <LibrarySection
+            title="Completed"
+            movies={completed}
+            onMovieClick={setSelectedMovie}
+          />
+        )}
       </main>
 
-
-      {/* ================= MOVIE MODAL ================= */}
+      {/* =================================================
+          MOVIE MODAL
+      ================================================= */}
 
       <MovieModal
         movie={selectedMovie}
         onClose={() => setSelectedMovie(null)}
       />
-
     </div>
+  );
+};
+
+// =========================================================
+// LIBRARY SECTION
+// =========================================================
+
+const LibrarySection = ({
+  title,
+  movies,
+  onMovieClick,
+}) => {
+  return (
+    <section className="mb-12">
+      <div className="mb-5 flex items-center justify-between">
+        <h2 className="text-2xl font-bold">
+          {title}
+        </h2>
+
+        <span className="text-sm text-gray-600">
+          {movies.length}
+        </span>
+      </div>
+
+      <div
+        className="
+          grid
+          grid-cols-2
+          gap-4
+          sm:grid-cols-3
+          md:grid-cols-4
+          md:gap-5
+          lg:grid-cols-5
+          xl:grid-cols-6
+          2xl:grid-cols-7
+        "
+      >
+        {movies.map((movie) => (
+          <Moviecard
+            key={movie.id}
+            movie={movie}
+            onClick={() => onMovieClick(movie)}
+          />
+        ))}
+      </div>
+    </section>
   );
 };
 

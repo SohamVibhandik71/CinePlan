@@ -6,6 +6,7 @@ import libraryRouter from "./src/routes/libraryRoutes.js";
 import progressRouter from "./src/routes/progressRoutes.js";
 import reviewRouter from "./src/routes/reviewRoutes.js";
 import recommendationRouter from "./src/routes/recommendationRoutes.js";
+import cors from "cors";
 
 
 dotenv.config();
