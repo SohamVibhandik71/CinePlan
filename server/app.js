@@ -5,7 +5,7 @@ import contentRouter from "./src/routes/contentRoutes.js";
 import libraryRouter from "./src/routes/libraryRoutes.js";
 import progressRouter from "./src/routes/progressRoutes.js";
 import reviewRouter from "./src/routes/reviewRoutes.js";
-import cors from 'cors';
+import recommendationRouter from "./src/routes/recommendationRoutes.js";
 
 
 dotenv.config();
@@ -31,5 +31,6 @@ app.use("/api/content",contentRouter);
 app.use("/api/library", libraryRouter);
 app.use("/api/progress", progressRouter);
 app.use("/api/reviews", reviewRouter);
+app.use("/api/recommendations", recommendationRouter);
 
 export default app;
