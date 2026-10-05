@@ -2,41 +2,105 @@ import React, { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
+// =====================================================
+// SAFE STORAGE HELPERS
+// =====================================================
+
+const getStoredItem = (key) => {
+  const localValue = localStorage.getItem(key);
+
+  if (localValue && localValue !== "undefined") {
+    return localValue;
+  }
+
+  const sessionValue = sessionStorage.getItem(key);
+
+  if (sessionValue && sessionValue !== "undefined") {
+    return sessionValue;
+  }
+
+  return null;
+};
+
+const getStoredUser = () => {
+  const storedUser = getStoredItem("user");
+
+  if (!storedUser) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(storedUser);
+  } catch (error) {
+    console.error("Invalid stored user data:", error);
+
+    // Remove corrupted data
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
+
+    return null;
+  }
+};
+
+// =====================================================
+// AUTH PROVIDER
+// =====================================================
+
 export const AuthProvider = ({ children }) => {
+  // ================= USER =================
 
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    return getStoredUser();
   });
+
+  // ================= TOKEN =================
 
   const [token, setToken] = useState(() => {
-    return localStorage.getItem("token");
+    return getStoredItem("token");
   });
 
+  // =====================================================
+  // LOGIN
+  // =====================================================
 
-  // ================= LOGIN =================
+  const login = (userData, authToken, rememberMe = false) => {
+    setUser(userData || null);
+    setToken(authToken || null);
 
-  const login = (userData, token) => {
-    setUser(userData);
-    setToken(token);
+    // Clear previous authentication data first
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
 
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", token);
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+
+    if (!authToken) {
+      console.error("No authentication token received.");
+      return;
+    }
+
+    const storage = rememberMe ? localStorage : sessionStorage;
+
+    // Store token
+    storage.setItem("token", authToken);
+
+    // Only store user if it actually exists
+    if (userData) {
+      storage.setItem("user", JSON.stringify(userData));
+    }
   };
 
+  // =====================================================
+  // SIGNUP
+  // =====================================================
 
-  // ================= SIGNUP =================
-
-  const signup = (userData, token) => {
-    setUser(userData);
-    setToken(token);
-
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", token);
+  const signup = (userData, authToken, rememberMe = true) => {
+    login(userData, authToken, rememberMe);
   };
 
-
-  // ================= LOGOUT =================
+  // =====================================================
+  // LOGOUT
+  // =====================================================
 
   const logout = () => {
     setUser(null);
@@ -44,11 +108,20 @@ export const AuthProvider = ({ children }) => {
 
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
   };
 
+  // =====================================================
+  // AUTH STATUS
+  // =====================================================
 
   const isAuthenticated = !!token;
 
+  // =====================================================
+  // CONTEXT
+  // =====================================================
 
   return (
     <AuthContext.Provider
@@ -66,8 +139,9 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-
-// ================= CUSTOM HOOK =================
+// =====================================================
+// CUSTOM HOOK
+// =====================================================
 
 export const useAuth = () => {
   return useContext(AuthContext);

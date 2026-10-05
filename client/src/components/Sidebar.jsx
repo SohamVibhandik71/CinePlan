@@ -11,8 +11,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 
 const Sidebar = () => {
-
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -65,13 +64,10 @@ const Sidebar = () => {
         shadow-2xl
       "
     >
-
       <div className="flex h-full flex-col p-6">
-
         {/* ================= LOGO ================= */}
 
         <div className="mb-10 px-3">
-
           <h1 className="text-2xl font-semibold tracking-wide text-[#d4af37]">
             CinePlan
           </h1>
@@ -79,20 +75,15 @@ const Sidebar = () => {
           <p className="mt-1 text-xs tracking-wider text-gray-500">
             PLAN. WATCH. ENJOY.
           </p>
-
         </div>
-
 
         {/* ================= NAVIGATION ================= */}
 
         <nav className="flex-1">
-
           {/* PRIMARY NAVIGATION */}
 
           <div className="space-y-2">
-
             {primaryItems.map((item) => {
-
               const Icon = item.icon;
 
               return (
@@ -117,34 +108,22 @@ const Sidebar = () => {
                     }
                   `}
                 >
-                  <Icon
-                    size={19}
-                    strokeWidth={1.8}
-                  />
+                  <Icon size={19} strokeWidth={1.8} />
 
-                  <span>
-                    {item.label}
-                  </span>
-
+                  <span>{item.label}</span>
                 </NavLink>
               );
-
             })}
-
           </div>
-
 
           {/* SEPARATOR */}
 
           <div className="my-6 h-px bg-white/10" />
 
-
           {/* USER NAVIGATION */}
 
           <div className="space-y-2">
-
             {userItems.map((item) => {
-
               const Icon = item.icon;
 
               return (
@@ -169,61 +148,43 @@ const Sidebar = () => {
                     }
                   `}
                 >
+                  <Icon size={19} strokeWidth={1.8} />
 
-                  <Icon
-                    size={19}
-                    strokeWidth={1.8}
-                  />
-
-                  <span>
-                    {item.label}
-                  </span>
-
+                  <span>{item.label}</span>
                 </NavLink>
               );
-
             })}
-
           </div>
-
         </nav>
-
 
         {/* ================= PROFILE ================= */}
 
         <div className="mb-5 border-t border-white/10 pt-5">
-
           <div className="flex items-center gap-3 px-2">
-
             <img
-              src="https://i.pravatar.cc/150?img=12"
+              src="https://i.pinimg.com/originals/13/74/20/137420f5b9c39bc911e472f5d20f053e.jpg?nii=t"
               alt="Profile"
               className="
-                h-10
-                w-10
-                rounded-full
-                object-cover
-                border
-                border-[#d4af37]/40
-              "
+                  h-10
+                  w-10
+                  rounded-full
+                  object-cover
+                  border
+                  border-[#d4af37]/40
+                "
             />
 
-            <div>
-
-              <p className="text-sm font-semibold text-white">
-                Uddhav
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-white">
+                {user?.name || "CinePlan User"}
               </p>
 
-              <p className="text-xs text-gray-500">
-                CinePlan User
+              <p className="truncate text-xs text-gray-500">
+                {user?.email || "CinePlan Member"}
               </p>
-
             </div>
-
           </div>
-
         </div>
-
 
         {/* ================= SIGN OUT ================= */}
 
@@ -246,20 +207,11 @@ const Sidebar = () => {
             hover:text-red-400
           "
         >
+          <LogOut size={19} strokeWidth={1.8} />
 
-          <LogOut
-            size={19}
-            strokeWidth={1.8}
-          />
-
-          <span>
-            Sign Out
-          </span>
-
+          <span>Sign Out</span>
         </button>
-
       </div>
-
     </aside>
   );
 };
