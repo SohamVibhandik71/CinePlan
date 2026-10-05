@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Check } from 'lucide-react'
 import FormInput from './FormInput'
 import GoogleSignInButton from './GoogleSignInButton'
+import axios from 'axios'
 
 export default function LoginForm({ onLoadingChange }) {
   const [email, setEmail] = useState('')
@@ -11,21 +12,54 @@ export default function LoginForm({ onLoadingChange }) {
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
 
-  function handleSubmit(event) {
-    event.preventDefault()
-    const nextErrors = {}
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = 'Please enter a valid email address.'
-    if (!password) nextErrors.password = 'Password is required.'
-    setErrors(nextErrors)
-    if (Object.keys(nextErrors).length) return
+async function handleSubmit(event) {
+  event.preventDefault()
 
-    setLoading(true)
-    onLoadingChange(true)
-    window.setTimeout(() => {
-      setLoading(false)
-      onLoadingChange(false)
-    }, 1400)
+  const nextErrors = {}
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    nextErrors.email = 'Please enter a valid email address.'
   }
+
+  if (!password) {
+    nextErrors.password = 'Password is required.'
+  }
+
+  setErrors(nextErrors)
+
+  if (Object.keys(nextErrors).length) return
+
+  setLoading(true)
+  onLoadingChange(true)
+
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/api/user/login`,
+      {
+        email: email.trim(),
+        password,
+      }
+    )
+
+    const data = response.data
+
+    console.log('Login successful:', data)
+
+    localStorage.setItem('token', data.token)
+
+    window.location.href = '/dashboard'
+
+  } catch (error) {
+    console.error('Login error:', error)
+
+    setErrors({
+      form: error.response?.data?.message || 'Unable to connect to the server.',
+    })
+  } finally {
+    setLoading(false)
+    onLoadingChange(false)
+  }
+}
 
   return (
     <form className="flex flex-col gap-[27px]" onSubmit={handleSubmit} noValidate>

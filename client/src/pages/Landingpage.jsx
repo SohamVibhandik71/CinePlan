@@ -1,18 +1,23 @@
 import React from "react";
-import {assets} from "../assets/assets.js";
+import { Link } from "react-router-dom";
+import { assets } from "../assets/assets.js";
+import { useAuth } from "../context/AuthContext";
 
 const Landingpage = () => {
+
+  const { user, isAuthenticated } = useAuth();
+
   return (
     <div className="min-h-screen bg-[#080808] text-white overflow-hidden relative">
 
       {/* ================= BACKGROUND ================= */}
-        <div className="fixed inset-0 z-0 w-screen h-screen overflow-hidden">
 
-        {/* Background Image */}
+      <div className="fixed inset-0 z-0 w-screen h-screen overflow-hidden">
+
         <img
-            src={assets.tickets_bg}
-            alt=""
-            className="
+          src={assets.tickets_bg}
+          alt=""
+          className="
             absolute
             top-0
             left-0
@@ -20,36 +25,34 @@ const Landingpage = () => {
             h-full
             object-cover
             object-center
-            "
+          "
         />
 
-        {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/45" />
 
-        {/* Left Gradient */}
         <div className="
-            absolute
-            inset-0
-            bg-gradient-to-r
-            from-black/90
-            via-black/55
-            to-transparent
+          absolute
+          inset-0
+          bg-gradient-to-r
+          from-black/90
+          via-black/55
+          to-transparent
         " />
 
-        {/* Bottom Gradient */}
         <div className="
-            absolute
-            inset-0
-            bg-gradient-to-t
-            from-[#080808]
-            via-transparent
-            to-black/20
+          absolute
+          inset-0
+          bg-gradient-to-t
+          from-[#080808]
+          via-transparent
+          to-black/20
         " />
 
-        </div>
+      </div>
 
 
       {/* ================= NAVBAR ================= */}
+
       <nav className="
         fixed
         top-0
@@ -74,6 +77,7 @@ const Landingpage = () => {
         ">
 
           {/* Logo */}
+
           <div className="
             font-serif
             text-2xl
@@ -85,38 +89,63 @@ const Landingpage = () => {
           </div>
 
 
-          {/* Navigation */}
+          {/* ================= AUTH NAVIGATION ================= */}
+
           <div className="flex items-center gap-4 md:gap-6">
 
-            <button className="
-              text-xs
-              md:text-sm
-              font-medium
-              text-white
-              hover:text-[#f2ca50]
-              transition-colors
-            ">
-              Sign In
-            </button>
+            {isAuthenticated ? (
 
+              // Logged in
+              <span className="
+                text-sm
+                md:text-base
+                font-medium
+                text-[#f2ca50]
+              ">
+                {user?.name}
+              </span>
 
-            <button className="
-              bg-[#f2ca50]
-              text-black
-              px-4
-              md:px-5
-              py-2
-              rounded-md
-              text-xs
-              md:text-sm
-              font-semibold
-              hover:bg-[#ffd968]
-              transition-all
-              duration-300
-              hover:scale-105
-            ">
-              Sign Up
-            </button>
+            ) : (
+
+              // Not logged in
+              <>
+                <Link
+                  to="/login"
+                  className="
+                    text-xs
+                    md:text-sm
+                    font-medium
+                    text-white
+                    hover:text-[#f2ca50]
+                    transition-colors
+                  "
+                >
+                  Sign In
+                </Link>
+
+                <Link
+                  to="/signup"
+                  className="
+                    bg-[#f2ca50]
+                    text-black
+                    px-4
+                    md:px-5
+                    py-2
+                    rounded-md
+                    text-xs
+                    md:text-sm
+                    font-semibold
+                    hover:bg-[#ffd968]
+                    transition-all
+                    duration-300
+                    hover:scale-105
+                  "
+                >
+                  Sign Up
+                </Link>
+              </>
+
+            )}
 
           </div>
 
@@ -126,6 +155,7 @@ const Landingpage = () => {
 
 
       {/* ================= HERO ================= */}
+
       <main className="
         relative
         z-10
@@ -151,7 +181,6 @@ const Landingpage = () => {
             items-start
           ">
 
-            {/* Small Heading */}
             <p className="
               text-[#f2ca50]
               uppercase
@@ -165,7 +194,6 @@ const Landingpage = () => {
             </p>
 
 
-            {/* Main Heading */}
             <h1 className="
               font-serif
               text-4xl
@@ -189,7 +217,6 @@ const Landingpage = () => {
             </h1>
 
 
-            {/* Description */}
             <p className="
               mt-4
               max-w-lg
@@ -204,7 +231,8 @@ const Landingpage = () => {
             </p>
 
 
-            {/* Buttons */}
+            {/* ================= HERO BUTTONS ================= */}
+
             <div className="
               mt-6
               flex
@@ -213,32 +241,35 @@ const Landingpage = () => {
               gap-3
             ">
 
-              {/* Get Started */}
-              <button className="
-                group
-                flex
-                items-center
-                justify-center
-                gap-2
-                bg-[#f2ca50]
-                text-black
-                px-5
-                md:px-6
-                py-3
-                rounded-md
-                font-semibold
-                text-xs
-                md:text-sm
-                transition-all
-                duration-300
-                hover:bg-[#ffd968]
-                hover:scale-[1.03]
-                shadow-[0_0_20px_rgba(242,202,80,0.18)]
-              ">
+              {/* GET STARTED */}
+
+              <Link
+                to="/home"
+                className="
+                  group
+                  flex
+                  items-center
+                  justify-center
+                  gap-2
+                  bg-[#f2ca50]
+                  text-black
+                  px-5
+                  md:px-6
+                  py-3
+                  rounded-md
+                  font-semibold
+                  text-xs
+                  md:text-sm
+                  transition-all
+                  duration-300
+                  hover:bg-[#ffd968]
+                  hover:scale-[1.03]
+                  shadow-[0_0_20px_rgba(242,202,80,0.18)]
+                "
+              >
 
                 Get Started
 
-                {/* Smaller Arrow */}
                 <span className="
                   text-base
                   md:text-lg
@@ -249,10 +280,11 @@ const Landingpage = () => {
                   →
                 </span>
 
-              </button>
+              </Link>
 
 
-              {/* About Us */}
+              {/* ABOUT US */}
+
               <button className="
                 px-5
                 md:px-6
@@ -284,6 +316,7 @@ const Landingpage = () => {
 
 
       {/* ================= FOOTER ================= */}
+
       <footer className="
         absolute
         bottom-0
@@ -310,7 +343,6 @@ const Landingpage = () => {
           gap-2
         ">
 
-          {/* Footer Logo */}
           <div className="
             font-serif
             text-lg
@@ -322,7 +354,6 @@ const Landingpage = () => {
           </div>
 
 
-          {/* Footer Links */}
           <div className="
             flex
             flex-wrap
@@ -365,7 +396,6 @@ const Landingpage = () => {
           </div>
 
 
-          {/* Copyright */}
           <div className="
             text-[9px]
             md:text-[11px]
