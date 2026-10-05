@@ -16,6 +16,10 @@ export const ContentProvider = ({ children }) => {
   const [animeLoading, setAnimeLoading] = useState(false);
   const [animeError, setAnimeError] = useState(null); 
 
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
+
  const fetchMovies = async () => {
   try {
     console.log("Movies: request started");
@@ -107,6 +111,41 @@ export const ContentProvider = ({ children }) => {
     }
   };
 
+  const searchContent = async (query) => {
+    try {
+      setSearchLoading(true);
+      setSearchError(null);
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/content/search`,
+        {
+          params: {
+            query: query.trim(),
+          },
+        }
+      );
+
+      const data = response.data;
+
+      if (data.success) {
+        setSearchResults(data.data.results);
+      } else {
+        setSearchError(data.message || "Failed to search content");
+        setSearchResults([]);
+      }
+    } catch (error) {
+      console.error("Error searching content:", error);
+
+      setSearchError(
+        error.response?.data?.message || "Failed to search content"
+      );
+
+      setSearchResults([]);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
   return (
     <ContentContext.Provider
       value={{
@@ -124,6 +163,11 @@ export const ContentProvider = ({ children }) => {
         animeLoading,
         animeError,
         fetchAnime,
+
+        searchResults,
+        searchLoading,
+        searchError,
+        searchContent,
       }}
     >
       {children}
