@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Browse from './pages/Browse'
 import Library from './pages/Library'
 import Dashboard from './pages/Dashboard'
+import Recommendation from './pages/Recommendation'
 
 const App = () => {
   return (
@@ -46,6 +47,11 @@ const App = () => {
         <Route
           path="/library"
           element={<Library />}
+        />
+
+        <Route
+          path="/recommendations"
+          element={<Recommendation />}
         />
 
       </Routes>
