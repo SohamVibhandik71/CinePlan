@@ -1,80 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Loader2, Library as LibraryIcon } from "lucide-react";
-import axios from "axios";
+import {
+  ArrowLeft,
+  Loader2,
+  Library as LibraryIcon,
+} from "lucide-react";
 
 import Moviecard from "../components/Moviecard";
 import MovieModal from "../components/MovieModel";
 
+import { useLibrary } from "../context/LibraryContext";
+
 const Library = () => {
-  const [library, setLibrary] = useState([]);
+  const {
+    library,
+    libraryLoading,
+    libraryError,
+    deleteLibraryItem,
+  } = useLibrary();
+
   const [selectedMovie, setSelectedMovie] = useState(null);
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  // =====================================================
-  // GET AUTH TOKEN
-  // =====================================================
-
-  const getToken = () => {
-    return (
-      localStorage.getItem("token") ||
-      sessionStorage.getItem("token")
-    );
-  };
-
-  // =====================================================
-  // FETCH USER LIBRARY
-  // =====================================================
-
-  const fetchLibrary = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const token = getToken();
-
-      if (!token) {
-        setError("Please login to view your library.");
-        return;
-      }
-
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/library`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.data.success) {
-        setLibrary(response.data.data || []);
-      } else {
-        setError(
-          response.data.message || "Failed to load library."
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching library:", error);
-
-      setError(
-        error.response?.data?.message ||
-          "Unable to load your library."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // =====================================================
-  // FETCH LIBRARY ON PAGE LOAD
-  // =====================================================
-
-  useEffect(() => {
-    fetchLibrary();
-  }, []);
 
   // =====================================================
   // CONVERT LIBRARY ITEM TO MOVIECARD FORMAT
@@ -84,13 +29,14 @@ const Library = () => {
     return {
       ...item,
 
-      // Moviecard / MovieModal may expect "name"
       name: item.title,
 
-      // Keep original database ID
-      id: item._id,
+      // MongoDB document ID
+      libraryId: item._id,
 
-      // External movie API ID
+      // TMDB ID
+      id: item.id || item.externalId,
+
       externalId: item.externalId,
 
       poster: item.poster,
@@ -129,28 +75,11 @@ const Library = () => {
 
   const removeFromLibrary = async (itemId) => {
     try {
-      const token = getToken();
-
-      await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/library/${itemId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // Remove from UI immediately
-      setLibrary((prev) =>
-        prev.filter((item) => item._id !== itemId)
-      );
+      await deleteLibraryItem(itemId);
 
       setSelectedMovie(null);
     } catch (error) {
-      console.error(
-        "Error removing library item:",
-        error
-      );
+      console.error("Error removing library item:", error);
     }
   };
 
@@ -158,7 +87,7 @@ const Library = () => {
   // LOADING STATE
   // =====================================================
 
-  if (loading) {
+  if (libraryLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#080808] text-white">
         <div className="flex flex-col items-center gap-4">
@@ -261,7 +190,7 @@ const Library = () => {
             ERROR
         ================================================= */}
 
-        {error && (
+        {libraryError && (
           <div
             className="
               mb-8
@@ -275,7 +204,7 @@ const Library = () => {
               text-red-400
             "
           >
-            {error}
+            {libraryError}
           </div>
         )}
 
@@ -283,7 +212,7 @@ const Library = () => {
             EMPTY LIBRARY
         ================================================= */}
 
-        {!error && library.length === 0 && (
+        {!libraryError && library.length === 0 && (
           <div
             className="
               flex
@@ -367,6 +296,7 @@ const Library = () => {
             onMovieClick={setSelectedMovie}
           />
         )}
+
       </main>
 
       {/* =================================================
@@ -377,6 +307,7 @@ const Library = () => {
         movie={selectedMovie}
         onClose={() => setSelectedMovie(null)}
       />
+
     </div>
   );
 };
@@ -392,6 +323,7 @@ const LibrarySection = ({
 }) => {
   return (
     <section className="mb-12">
+
       <div className="mb-5 flex items-center justify-between">
         <h2 className="text-2xl font-bold">
           {title}
@@ -423,6 +355,7 @@ const LibrarySection = ({
           />
         ))}
       </div>
+
     </section>
   );
 };
