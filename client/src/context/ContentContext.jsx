@@ -1,9 +1,14 @@
 import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
+import { useAuth } from "./AuthContext";
+
+
 
 const ContentContext = createContext();
 
 export const ContentProvider = ({ children }) => {
+
+  const { token } = useAuth();
   const [movies, setMovies] = useState([]);
   const [moviesLoading, setMoviesLoading] = useState(false);
   const [moviesError, setMoviesError] = useState(null);
@@ -19,6 +24,10 @@ export const ContentProvider = ({ children }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
+
+  const [recommendations, setRecommendations] = useState([]);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
+  const [recommendationsError, setRecommendationsError] = useState(null);
 
  const fetchMovies = async () => {
   try {
@@ -146,6 +155,41 @@ export const ContentProvider = ({ children }) => {
     }
   };
 
+  const fetchRecommendations = async () => {
+    try {
+      setRecommendationsLoading(true);
+      setRecommendationsError(null);
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/recommendations`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = response.data;
+
+      if (data.success) {
+        setRecommendations(data.data);
+      } else {
+        setRecommendationsError(
+          data.message || "Failed to fetch recommendations"
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+
+      setRecommendationsError(
+        error.response?.data?.message ||
+          "Failed to fetch recommendations"
+      );
+    } finally {
+      setRecommendationsLoading(false);
+    }
+  };
+
   return (
     <ContentContext.Provider
       value={{
@@ -168,6 +212,11 @@ export const ContentProvider = ({ children }) => {
         searchLoading,
         searchError,
         searchContent,
+
+        recommendations,
+        recommendationsLoading,
+        recommendationsError,
+        fetchRecommendations,
       }}
     >
       {children}
