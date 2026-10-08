@@ -2,39 +2,112 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
-import { dummyMovies } from "../assets/assets";
 import Moviecard from "../components/Moviecard";
 import MovieModal from "../components/MovieModel";
 
+import { useLibrary } from "../context/LibraryContext";
+
 const Dashboard = () => {
+  const {
+    library,
+    libraryLoading,
+    libraryError,
+  } = useLibrary();
 
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  // ================= DASHBOARD DATA =================
+  // =====================================================
+  // CONTINUE WATCHING
+  // Only watching items are displayed as cards
+  // =====================================================
 
-  const continueWatching = [
-    dummyMovies[0],
-    dummyMovies[1],
-    dummyMovies[2],
-  ];
+  const continueWatching = library.filter(
+    (item) => item.status === "watching"
+  );
 
-  const todaysPlan = [
-    dummyMovies[3],
-    dummyMovies[4],
-  ];
+  // =====================================================
+  // STATS
+  // These are calculated from the user's library
+  // =====================================================
 
-  const stats = {
-    completedMovies: 12,
-    completedSeries: 7,
-    completedAnime: 9,
-    futureContent: 18,
-    totalHours: 86,
-  };
+  const completedContent = library.filter(
+    (item) => item.status === "completed"
+  );
+
+  const plannedContent = library.filter(
+    (item) => item.status === "planned"
+  );
+
+  const completedMovies = completedContent.filter(
+    (item) => item.type === "movie"
+  ).length;
+
+  const completedSeries = completedContent.filter(
+    (item) => item.type === "tv"
+  ).length;
+
+  const completedAnime = completedContent.filter(
+    (item) => item.type === "anime"
+  ).length;
+
+  const futureContent = plannedContent.length;
+
+  // Watch-time tracking will be implemented later.
+  const totalHours = 0;
+
+  // =====================================================
+  // LOADING
+  // =====================================================
+
+  if (libraryLoading) {
+    return (
+      <div className="min-h-screen bg-[#080808] text-white">
+
+        <div className="border-b border-white/10 px-6 py-5 md:px-10">
+          <Link
+            to="/home"
+            className="
+              inline-flex
+              items-center
+              gap-2
+              rounded-lg
+              border
+              border-[#d4af37]/40
+              bg-[#d4af37]/10
+              px-3
+              py-2
+              text-sm
+              font-medium
+              text-[#f2ca50]
+              transition-all
+              duration-200
+              hover:border-[#d4af37]
+              hover:bg-[#d4af37]
+              hover:text-black
+              hover:shadow-[0_0_15px_rgba(212,175,55,0.25)]
+            "
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Home</span>
+          </Link>
+        </div>
+
+        <div className="flex min-h-[500px] items-center justify-center">
+          <p className="text-gray-500">
+            Loading your dashboard...
+          </p>
+        </div>
+
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#080808] text-white">
 
-      {/* ================= HEADER ================= */}
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
 
       <div className="border-b border-white/10 px-6 py-5 md:px-10">
 
@@ -68,100 +141,97 @@ const Dashboard = () => {
       </div>
 
 
-      {/* ================= CONTENT ================= */}
+      {/* =====================================================
+          CONTENT
+      ===================================================== */}
 
       <main
         className="
-          max-w-[1600px]
           mx-auto
+          max-w-[1600px]
           px-6
-          md:px-10
           py-10
+          md:px-10
         "
       >
 
-        {/* ================= WELCOME ================= */}
+        {/* =====================================================
+            WELCOME
+        ===================================================== */}
 
         <div className="mb-10">
 
-          <h1 className="text-3xl md:text-4xl font-bold">
+          <h1 className="text-3xl font-bold md:text-4xl">
             Welcome back
           </h1>
 
-          <p className="text-gray-500 mt-2">
+          <p className="mt-2 text-gray-500">
             Continue your journey through the world of cinema.
           </p>
 
         </div>
 
 
-        {/* ================= CONTINUE WATCHING ================= */}
+        {/* =====================================================
+            ERROR
+        ===================================================== */}
+
+        {libraryError && (
+          <div
+            className="
+              mb-8
+              rounded-lg
+              border
+              border-red-500/20
+              bg-red-500/10
+              px-5
+              py-4
+              text-sm
+              text-red-400
+            "
+          >
+            {libraryError}
+          </div>
+        )}
+
+
+        {/* =====================================================
+            CONTINUE WATCHING
+        ===================================================== */}
 
         <section className="mb-12">
 
-          <div className="flex items-center justify-between mb-5">
+          <div className="mb-5 flex items-center justify-between">
 
             <h2 className="text-2xl font-bold">
               Continue Watching
             </h2>
 
-          </div>
-
-          <div
-            className="
-              grid
-              grid-cols-2
-              sm:grid-cols-3
-              md:grid-cols-4
-              lg:grid-cols-5
-              xl:grid-cols-6
-              gap-4
-              md:gap-5
-            "
-          >
-
-            {continueWatching.map((movie) => (
-
-              <Moviecard
-                key={movie.id}
-                movie={movie}
-                onClick={() => setSelectedMovie(movie)}
-              />
-
-            ))}
+            <span className="text-sm text-gray-600">
+              {continueWatching.length}
+            </span>
 
           </div>
 
-        </section>
-
-
-        {/* ================= TODAY'S PLAN ================= */}
-
-        <section className="mb-12">
-
-          <h2 className="text-2xl font-bold mb-5">
-            Today's Plan
-          </h2>
-
-          {todaysPlan.length > 0 ? (
+          {continueWatching.length > 0 ? (
 
             <div
               className="
                 grid
                 grid-cols-2
+                gap-4
                 sm:grid-cols-3
                 md:grid-cols-4
+                md:gap-5
                 lg:grid-cols-5
                 xl:grid-cols-6
-                gap-4
-                md:gap-5
               "
             >
 
-              {todaysPlan.map((movie) => (
+              {continueWatching.map((movie) => (
 
                 <Moviecard
-                  key={movie.id}
+                  key={movie._id}
                   movie={movie}
                   onClick={() => setSelectedMovie(movie)}
                 />
@@ -174,8 +244,8 @@ const Dashboard = () => {
 
             <div
               className="
-                py-16
                 flex
+                min-h-[220px]
                 items-center
                 justify-center
                 rounded-xl
@@ -186,7 +256,7 @@ const Dashboard = () => {
             >
 
               <p className="text-gray-500">
-                Nothing to watch today
+                You aren't watching anything right now.
               </p>
 
             </div>
@@ -196,11 +266,241 @@ const Dashboard = () => {
         </section>
 
 
-        {/* ================= STATS ================= */}
+        {/* =====================================================
+            TODAY'S PLAN
+        ===================================================== */}
+
+        <section className="mb-12">
+
+          <h2 className="mb-5 text-2xl font-bold">
+            Today's Plan
+          </h2>
+
+          <div
+            className="
+              relative
+              min-h-[260px]
+              overflow-hidden
+              rounded-2xl
+              border
+              border-[#d4af37]/20
+              bg-gradient-to-br
+              from-[#d4af37]/[0.08]
+              via-white/[0.02]
+              to-transparent
+            "
+          >
+
+            {/* Background glow */}
+
+            <div
+              className="
+                absolute
+                left-1/2
+                top-1/2
+                h-40
+                w-40
+                -translate-x-1/2
+                -translate-y-1/2
+                rounded-full
+                bg-[#d4af37]/10
+                blur-3xl
+                animate-pulse
+              "
+            />
+
+            {/* Floating emojis */}
+
+            <div
+              className="
+                absolute
+                left-[15%]
+                top-10
+                text-2xl
+                opacity-40
+                animate-bounce
+              "
+            >
+              🎬
+            </div>
+
+            <div
+              className="
+                absolute
+                right-[18%]
+                top-14
+                text-xl
+                opacity-40
+                animate-pulse
+              "
+            >
+              ✨
+            </div>
+
+            <div
+              className="
+                absolute
+                bottom-10
+                left-[25%]
+                text-xl
+                opacity-30
+                animate-pulse
+              "
+            >
+              🍿
+            </div>
+
+            <div
+              className="
+                absolute
+                bottom-8
+                right-[25%]
+                text-2xl
+                opacity-30
+                animate-bounce
+              "
+            >
+              🎥
+            </div>
+
+
+            {/* Main content */}
+
+            <div
+              className="
+                relative
+                flex
+                min-h-[260px]
+                flex-col
+                items-center
+                justify-center
+                px-6
+                text-center
+              "
+            >
+
+              {/* Main emoji */}
+
+              <div className="mb-4 text-5xl animate-bounce">
+                🎬
+              </div>
+
+
+              {/* Status */}
+
+              <div
+                className="
+                  mb-4
+                  flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  border
+                  border-[#d4af37]/30
+                  bg-[#d4af37]/10
+                  px-4
+                  py-2
+                  text-sm
+                  font-medium
+                  text-[#f2ca50]
+                "
+              >
+
+                <span className="animate-pulse">
+                  🔴
+                </span>
+
+                <span>
+                  LIVE FEATURE IN DEVELOPMENT
+                </span>
+
+              </div>
+
+
+              {/* Title */}
+
+              <h3
+                className="
+                  text-xl
+                  font-semibold
+                  text-white
+                  md:text-2xl
+                "
+              >
+                Your Daily Watch Plan is Coming! ✨
+              </h3>
+
+
+              {/* Description */}
+
+              <p
+                className="
+                  mt-3
+                  max-w-lg
+                  text-sm
+                  leading-relaxed
+                  text-gray-500
+                "
+              >
+                We're cooking up something special 🍿
+                <br />
+                Soon CinePlan will create a personalized
+                watch plan just for you.
+              </p>
+
+
+              {/* Animated dots */}
+
+              <div className="mt-5 flex items-center gap-1">
+
+                <span
+                  className="
+                    h-1.5
+                    w-1.5
+                    rounded-full
+                    bg-[#d4af37]
+                    animate-pulse
+                  "
+                />
+
+                <span
+                  className="
+                    h-1.5
+                    w-1.5
+                    rounded-full
+                    bg-[#d4af37]
+                    animate-pulse
+                    [animation-delay:200ms]
+                  "
+                />
+
+                <span
+                  className="
+                    h-1.5
+                    w-1.5
+                    rounded-full
+                    bg-[#d4af37]
+                    animate-pulse
+                    [animation-delay:400ms]
+                  "
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =====================================================
+            STATS
+        ===================================================== */}
 
         <section>
 
-          <h2 className="text-2xl font-bold mb-5">
+          <h2 className="mb-5 text-2xl font-bold">
             Your Stats
           </h2>
 
@@ -208,22 +508,37 @@ const Dashboard = () => {
             className="
               grid
               grid-cols-1
+              gap-4
               sm:grid-cols-2
               lg:grid-cols-4
-              gap-4
             "
           >
 
             {/* Completed Movies */}
 
-            <div className="p-6 rounded-xl bg-white/[0.03] border border-white/10">
+            <div
+              className="
+                rounded-xl
+                border
+                border-white/10
+                bg-white/[0.03]
+                p-6
+              "
+            >
 
-              <p className="text-gray-500 text-sm">
+              <p className="text-sm text-gray-500">
                 Completed Movies
               </p>
 
-              <p className="mt-2 text-3xl font-bold text-[#d4af37]">
-                {stats.completedMovies}
+              <p
+                className="
+                  mt-2
+                  text-3xl
+                  font-bold
+                  text-[#d4af37]
+                "
+              >
+                {completedMovies}
               </p>
 
             </div>
@@ -231,14 +546,29 @@ const Dashboard = () => {
 
             {/* Completed Series */}
 
-            <div className="p-6 rounded-xl bg-white/[0.03] border border-white/10">
+            <div
+              className="
+                rounded-xl
+                border
+                border-white/10
+                bg-white/[0.03]
+                p-6
+              "
+            >
 
-              <p className="text-gray-500 text-sm">
+              <p className="text-sm text-gray-500">
                 Completed Series
               </p>
 
-              <p className="mt-2 text-3xl font-bold text-[#d4af37]">
-                {stats.completedSeries}
+              <p
+                className="
+                  mt-2
+                  text-3xl
+                  font-bold
+                  text-[#d4af37]
+                "
+              >
+                {completedSeries}
               </p>
 
             </div>
@@ -246,14 +576,29 @@ const Dashboard = () => {
 
             {/* Completed Anime */}
 
-            <div className="p-6 rounded-xl bg-white/[0.03] border border-white/10">
+            <div
+              className="
+                rounded-xl
+                border
+                border-white/10
+                bg-white/[0.03]
+                p-6
+              "
+            >
 
-              <p className="text-gray-500 text-sm">
+              <p className="text-sm text-gray-500">
                 Completed Anime
               </p>
 
-              <p className="mt-2 text-3xl font-bold text-[#d4af37]">
-                {stats.completedAnime}
+              <p
+                className="
+                  mt-2
+                  text-3xl
+                  font-bold
+                  text-[#d4af37]
+                "
+              >
+                {completedAnime}
               </p>
 
             </div>
@@ -261,14 +606,29 @@ const Dashboard = () => {
 
             {/* Future Content */}
 
-            <div className="p-6 rounded-xl bg-white/[0.03] border border-white/10">
+            <div
+              className="
+                rounded-xl
+                border
+                border-white/10
+                bg-white/[0.03]
+                p-6
+              "
+            >
 
-              <p className="text-gray-500 text-sm">
+              <p className="text-sm text-gray-500">
                 Future Content
               </p>
 
-              <p className="mt-2 text-3xl font-bold text-[#d4af37]">
-                {stats.futureContent}
+              <p
+                className="
+                  mt-2
+                  text-3xl
+                  font-bold
+                  text-[#d4af37]
+                "
+              >
+                {futureContent}
               </p>
 
             </div>
@@ -278,31 +638,42 @@ const Dashboard = () => {
 
             <div
               className="
-                p-6
                 rounded-xl
-                bg-white/[0.03]
                 border
                 border-white/10
+                bg-white/[0.03]
+                p-6
                 sm:col-span-2
                 lg:col-span-4
               "
             >
 
-              <p className="text-gray-500 text-sm">
+              <p className="text-sm text-gray-500">
                 Total Time Watched
               </p>
 
-              <div className="flex items-end gap-2 mt-2">
+              <div className="mt-2 flex items-end gap-2">
 
-                <p className="text-4xl font-bold text-[#d4af37]">
-                  {stats.totalHours}
+                <p
+                  className="
+                    text-4xl
+                    font-bold
+                    text-[#d4af37]
+                  "
+                >
+                  {totalHours}
                 </p>
 
-                <p className="text-gray-400 mb-1">
+                <p className="mb-1 text-gray-400">
                   hours
                 </p>
 
               </div>
+
+              <p className="mt-2 text-xs text-gray-600">
+                Watch-time tracking will be available in a
+                future update. ⏱️
+              </p>
 
             </div>
 
@@ -313,7 +684,9 @@ const Dashboard = () => {
       </main>
 
 
-      {/* ================= MOVIE MODAL ================= */}
+      {/* =====================================================
+          MOVIE MODAL
+      ===================================================== */}
 
       <MovieModal
         movie={selectedMovie}
