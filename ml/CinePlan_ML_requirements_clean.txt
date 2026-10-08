@@ -1,0 +1,22 @@
+# CinePlan ML Service - requirements.txt
+
+# Core data processing
+numpy
+pandas
+
+# Machine learning / recommendation system
+scikit-learn
+
+# TMDB data collection
+requests
+python-dotenv
+
+# FastAPI ML service
+fastapi
+uvicorn[standard]
+
+# Validation / API models
+pydantic
+
+# Testing
+pytest
